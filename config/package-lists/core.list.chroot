@@ -1,0 +1,69 @@
+# Iron Linux - core system package list
+#
+# Kernel, firmware, init system and base APT tooling. This is the minimum
+# needed for a bootable, updatable, hardware-capable Debian base. Nothing
+# desktop-related lives in this file - see desktop.list.chroot and
+# apps.list.chroot.
+#
+# Format: one binary package name per line. Comments start with '#'.
+# live-build installs every *.list.chroot file into the live filesystem
+# (which is also what the installer copies to disk), so only put things
+# here that make sense both live AND installed.
+
+## --- Kernel ---
+linux-image-amd64
+
+## --- CPU microcode ---
+intel-microcode
+amd64-microcode
+
+## --- Firmware (common Intel/AMD graphics, Wi-Fi, Bluetooth, audio DSP) ---
+# Debian ships proprietary firmware blobs from the non-free-firmware
+# archive area (enabled in auto/config via --archive-areas). Keep this
+# list broad enough that a normal laptop/desktop just works, without
+# bundling every niche vendor blob (see docs/PACKAGES.md).
+firmware-linux
+firmware-misc-nonfree
+firmware-amd-graphics
+firmware-iwlwifi
+firmware-realtek
+firmware-atheros
+firmware-sof-signed
+
+## --- Init system / core userspace ---
+# Debian's default anyway; listed explicitly so the intent is documented
+# and the build doesn't silently depend on debootstrap defaults.
+systemd
+systemd-sysv
+udev
+dbus
+
+## --- APT / package management ---
+apt
+apt-utils
+apt-transport-https
+ca-certificates
+gnupg
+
+## --- Base shell / admin tooling ---
+sudo
+less
+bash-completion
+locales
+console-setup
+keyboard-configuration
+
+## --- Disk / storage utilities (needed live, useful installed) ---
+e2fsprogs
+dosfstools
+parted
+gdisk
+
+## --- Basic hardware introspection ---
+pciutils
+usbutils
+
+## --- Networking basics (NetworkManager itself lives in desktop.list.chroot) ---
+iproute2
+isc-dhcp-client
+openssh-client

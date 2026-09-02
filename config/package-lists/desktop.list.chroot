@@ -1,0 +1,74 @@
+# Iron Linux - desktop package list
+#
+# The Iron desktop: Wayland + Labwc + a small set of native, wlroots-friendly
+# utilities. No desktop environment (GNOME/KDE/XFCE/Cinnamon/MATE) is pulled
+# in here, deliberately. Every package below is picked for being small,
+# working properly under Wayland, and doing exactly one job.
+#
+# Actual Labwc/waybar/etc configuration (the "Iron UI") is wired up in a
+# later task via config/includes.chroot - this list only makes the binaries
+# available.
+
+## --- Compositor ---
+labwc
+xwayland
+wayland-utils
+
+## --- Session login (Wayland-native, systemd-logind backed - no seatd
+##     needed since systemd already provides seat/session management) ---
+greetd
+gtkgreet
+
+## --- Authentication agent (polkit) ---
+polkitd
+lxpolkit
+
+## --- Panel / launcher ---
+waybar
+fuzzel
+
+## --- Notifications ---
+mako-notifier
+
+## --- Terminal ---
+foot
+
+## --- File manager + removable media ---
+pcmanfm
+gvfs
+udiskie
+
+## --- Wallpaper / lock screen / power menu ---
+swaybg
+swaylock
+wlogout
+
+## --- Screenshots + clipboard ---
+grim
+slurp
+wl-clipboard
+
+## --- Audio: PipeWire + WirePlumber stack ---
+pipewire
+pipewire-pulse
+pipewire-alsa
+wireplumber
+pamixer
+wob
+
+## --- Networking (graphical control via nm-applet in the waybar tray) ---
+network-manager
+network-manager-applet
+
+## --- Bluetooth ---
+bluez
+blueman
+
+## --- Input / hardware controls ---
+brightnessctl
+
+## --- Fonts (UI + monospace; branding fonts land in assets/branding/fonts
+##     and are wired in via includes.chroot by the branding task) ---
+fonts-inter
+fonts-jetbrains-mono
+fonts-noto-color-emoji

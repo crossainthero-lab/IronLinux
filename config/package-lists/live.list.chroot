@@ -1,0 +1,20 @@
+# Iron Linux - live medium + installer package list
+#
+# Packages that make the ISO behave as a live/bootable medium and let a
+# user install Iron Linux to disk. live-boot/live-config/live-tools are
+# effectively no-ops once installed to a real disk (they only activate
+# with `boot=live` on the kernel command line), so it's safe to leave
+# them in the installed system rather than special-case their removal.
+#
+# Calamares is the installer (see docs/ARCHITECTURE.md for why: mature,
+# distribution-independent, Qt-based but not tied to KDE Plasma, and
+# already has a Debian settings module we theme for Iron in a later task).
+
+## --- Debian Live boot/session glue ---
+live-boot
+live-config
+live-tools
+
+## --- Installer ---
+calamares
+calamares-settings-debian

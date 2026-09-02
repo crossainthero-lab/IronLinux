@@ -1,0 +1,17 @@
+# Iron Linux - minimal default applications
+#
+# Deliberately small. Users are expected to `apt install` whatever else
+# they want - see README.md. No office suite, no IDE, no media suite,
+# no games.
+
+## --- Browser ---
+firefox-esr
+
+## --- Text editor ---
+mousepad
+
+## --- Archive handling ---
+xarchiver
+p7zip-full
+zip
+unzip

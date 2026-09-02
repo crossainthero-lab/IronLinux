@@ -1,0 +1,9 @@
+#!/bin/sh
+# Iron Linux - live-build "auto" build script.
+# Thin wrapper so `lb build` (run from the repo root) picks up consistent
+# logging. Prefer running the top-level ./build.sh instead of this
+# directly - it also handles cleaning, ISO renaming and checksums.
+
+set -e
+
+lb build "${@}" 2>&1 | tee -a build.log

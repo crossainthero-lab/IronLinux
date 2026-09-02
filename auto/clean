@@ -1,0 +1,8 @@
+#!/bin/sh
+# Iron Linux - live-build "auto" clean script.
+# Thin wrapper around `lb clean`. Prefer `./build.sh --clean` at the repo
+# root for interactive use.
+
+set -e
+
+lb clean "${@}"

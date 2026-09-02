@@ -1,0 +1,61 @@
+#!/bin/sh
+# Iron Linux - live-build "auto" config script
+#
+# This is the canonical, committed record of the `lb config` invocation
+# used to build Iron Linux. Running `lb config` from the repository root
+# automatically executes this script (that's what the auto/ directory is
+# for in live-build's convention) - you should never need to type the
+# long option list below by hand.
+#
+# Target: Debian stable, amd64, Wayland/Labwc live+installable ISO.
+#
+# NOTE: live-build's exact flag set has drifted across versions over the
+# years. This targets the live-build shipped in current Debian stable
+# (the `live-build` package, roughly 1:20230xxx or newer). If a flag
+# below is rejected by `lb config --help` on the actual build host,
+# check `man lb_config` on that host and adjust - do not silently drop
+# functionality, fix the flag name.
+
+set -e
+
+# Allow pinning to an explicit codename (e.g. IRON_DISTRIBUTION=trixie)
+# for reproducibility; defaults to the "stable" rolling alias so the
+# config keeps working across Debian point/major releases without edits.
+: "${IRON_DISTRIBUTION:=stable}"
+
+lb config noauto \
+    --mode debian \
+    --distribution "${IRON_DISTRIBUTION}" \
+    --architectures amd64 \
+    --archive-areas "main contrib non-free non-free-firmware" \
+    --updates true \
+    --security true \
+    --backports false \
+    \
+    --binary-images iso-hybrid \
+    --bootloaders "syslinux,grub-efi" \
+    --uefi-secure-boot disable \
+    --iso-application "Iron Linux" \
+    --iso-volume "IRON_LINUX" \
+    --iso-preparer "Iron Linux Project" \
+    --iso-publisher "Iron Linux Project - https://github.com/" \
+    \
+    --linux-packages "linux-image" \
+    --firmware-chroot true \
+    --firmware-binary true \
+    \
+    --bootappend-live "boot=live components username=iron hostname=iron-linux locales=en_US.UTF-8 keyboard-layouts=us quiet splash" \
+    \
+    --apt-recommends true \
+    --apt-indices false \
+    --apt-source-archives false \
+    \
+    --debian-installer none \
+    \
+    --memtest none \
+    --win32-loader false \
+    --source false \
+    --cache true \
+    --cache-packages true \
+    \
+    "${@}"
