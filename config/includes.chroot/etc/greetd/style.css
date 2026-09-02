@@ -1,0 +1,38 @@
+* {
+  all: unset;
+  font-family: Inter, sans-serif;
+  color: #f2f4f5;
+}
+
+window,
+#body {
+  background: #111315;
+}
+
+#window {
+  background: #171a1d;
+  border: 1px solid #777d84;
+  border-radius: 4px;
+  padding: 28px;
+}
+
+#clock {
+  color: #aeb4ba;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+entry,
+button,
+combobox {
+  background: #20242a;
+  border: 1px solid #4d535a;
+  border-radius: 4px;
+  padding: 9px 12px;
+}
+
+button:hover,
+button:focus,
+entry:focus {
+  border-color: #c9ced3;
+}

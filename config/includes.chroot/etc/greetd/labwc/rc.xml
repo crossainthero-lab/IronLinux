@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<labwc_config>
+  <core>
+    <decoration>server</decoration>
+  </core>
+  <theme>
+    <name>Iron</name>
+    <cornerRadius>4</cornerRadius>
+    <font name="Inter" size="10" />
+  </theme>
+  <keyboard>
+    <keybind key="C-A-Delete">
+      <action name="Execute" command="systemctl reboot" />
+    </keybind>
+  </keyboard>
+</labwc_config>

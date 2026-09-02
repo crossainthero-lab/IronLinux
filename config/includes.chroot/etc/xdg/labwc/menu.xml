@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu>
+  <menu id="root-menu" label="Iron Linux">
+    <item label="Terminal">
+      <action name="Execute" command="foot" />
+    </item>
+    <item label="Browser">
+      <action name="Execute" command="firefox-esr" />
+    </item>
+    <item label="Files">
+      <action name="Execute" command="pcmanfm" />
+    </item>
+    <item label="Editor">
+      <action name="Execute" command="mousepad" />
+    </item>
+    <separator />
+    <item label="Applications">
+      <action name="Execute" command="fuzzel" />
+    </item>
+    <item label="Clipboard">
+      <action name="Execute" command="iron-clipboard-menu" />
+    </item>
+    <item label="Screenshot Region">
+      <action name="Execute" command="iron-screenshot region" />
+    </item>
+    <separator />
+    <item label="Reconfigure Desktop">
+      <action name="Reconfigure" />
+    </item>
+    <item label="Power">
+      <action name="Execute" command="iron-power-menu" />
+    </item>
+  </menu>
+</openbox_menu>

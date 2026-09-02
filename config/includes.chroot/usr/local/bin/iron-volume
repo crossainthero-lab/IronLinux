@@ -1,0 +1,29 @@
+#!/bin/sh
+set -eu
+
+sink='@DEFAULT_AUDIO_SINK@'
+fifo="${XDG_RUNTIME_DIR:-/tmp}/iron-wob.sock"
+
+case "${1:-}" in
+    up)
+        wpctl set-mute "$sink" 0
+        wpctl set-volume -l 1.0 "$sink" 5%+
+        ;;
+    down)
+        wpctl set-volume "$sink" 5%-
+        ;;
+    mute)
+        wpctl set-mute "$sink" toggle
+        ;;
+    *)
+        printf 'usage: %s {up|down|mute}\n' "$0" >&2
+        exit 2
+        ;;
+esac
+
+volume="$(wpctl get-volume "$sink" | awk '{ for (i = 1; i <= NF; i++) if ($i ~ /^[0-9.]+$/) { printf "%d\n", $i * 100; exit } }')"
+[ -n "$volume" ] || volume=0
+
+if [ -p "$fifo" ]; then
+    printf '%s\n' "$volume" > "$fifo" || true
+fi

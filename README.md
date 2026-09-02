@@ -8,9 +8,9 @@ Dark iron / machined metal visual identity. No GNOME, no KDE, no XFCE,
 no bundled desktop environment - a small, coherent set of native
 Wayland components instead.
 
-**Status:** build skeleton + package lists are in place. The ISO has
-not been built yet - see `docs/BUILD.md` once the desktop/branding
-layers land.
+**Status:** build skeleton, package lists, OS identity, and the first
+Labwc/Wayland desktop configuration are in place. The ISO has not been
+built or boot-tested yet.
 
 ## Quick start
 
@@ -60,10 +60,11 @@ Desktop component reasoning and build pipeline: `docs/ARCHITECTURE.md`.
 
 ### `config/includes.chroot/` and `config/includes.binary/`
 
-Currently near-empty on purpose - these are the landing spots for
-later tasks (Labwc config, greetd config, OS identity files, boot
-splash artwork). Each has its own `README.md` documenting exactly which
-file goes where, so later work doesn't have to guess the layout.
+`config/includes.chroot/` now contains the system-wide Labwc session,
+greetd/gtkgreet wiring, Waybar/Fuzzel/Mako/Foot/Wlogout defaults, and
+small Iron helper scripts. Branding artwork and boot media assets still
+belong in `config/includes.chroot/` and `config/includes.binary/` as
+they are generated.
 
 ## Build system choice
 
@@ -95,10 +96,6 @@ This task deliberately stops at the build skeleton. Not yet done
 (tracked as later tasks in the same pipeline):
 
 - No ISO has been built or boot-tested.
-- `config/includes.chroot` has no actual Labwc/greetd/waybar/mako/foot
-  config yet - just the directory layout and a README mapping intended
-  file locations.
-- No OS identity files (`/etc/os-release` etc.) yet.
 - No branding wired into the build (source artwork is being generated
   separately under `assets/branding/`; nothing there is referenced by
   `config/` yet).

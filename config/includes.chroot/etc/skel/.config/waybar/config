@@ -1,0 +1,57 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 8,
+  "margin-top": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+  "modules-left": ["custom/launcher", "wlr/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": ["tray", "network", "pulseaudio", "battery", "custom/power"],
+  "custom/launcher": {
+    "format": "Iron",
+    "tooltip": false,
+    "on-click": "fuzzel"
+  },
+  "wlr/workspaces": {
+    "format": "{name}",
+    "on-click": "activate",
+    "sort-by-number": true
+  },
+  "clock": {
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "{:%A, %d %B %Y}"
+  },
+  "network": {
+    "format-wifi": "{essid}",
+    "format-ethernet": "Wired",
+    "format-disconnected": "Offline",
+    "tooltip-format": "{ifname}",
+    "on-click": "nm-connection-editor"
+  },
+  "pulseaudio": {
+    "format": "{volume}%",
+    "format-muted": "Muted",
+    "on-click": "iron-volume mute",
+    "on-scroll-up": "iron-volume up",
+    "on-scroll-down": "iron-volume down"
+  },
+  "battery": {
+    "format": "{capacity}%",
+    "format-charging": "{capacity}% AC",
+    "states": {
+      "warning": 25,
+      "critical": 12
+    }
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  },
+  "custom/power": {
+    "format": "Power",
+    "tooltip": false,
+    "on-click": "iron-power-menu"
+  }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu>
+  <menu id="root-menu" label="Iron Linux">
+    <item label="Reboot">
+      <action name="Execute" command="systemctl reboot" />
+    </item>
+    <item label="Power Off">
+      <action name="Execute" command="systemctl poweroff" />
+    </item>
+  </menu>
+</openbox_menu>

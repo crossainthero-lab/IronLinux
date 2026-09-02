@@ -40,6 +40,7 @@ udiskie
 
 ## --- Wallpaper / lock screen / power menu ---
 swaybg
+swayidle
 swaylock
 wlogout
 
@@ -47,13 +48,13 @@ wlogout
 grim
 slurp
 wl-clipboard
+cliphist
 
 ## --- Audio: PipeWire + WirePlumber stack ---
 pipewire
 pipewire-pulse
 pipewire-alsa
 wireplumber
-pamixer
 wob
 
 ## --- Networking (graphical control via nm-applet in the waybar tray) ---

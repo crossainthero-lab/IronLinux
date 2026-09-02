@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+if command -v wlogout >/dev/null 2>&1; then
+    exec wlogout \
+        --layout "$HOME/.config/wlogout/layout" \
+        --css "$HOME/.config/wlogout/style.css" \
+        --protocol layer-shell
+fi
+
+labwc --exit

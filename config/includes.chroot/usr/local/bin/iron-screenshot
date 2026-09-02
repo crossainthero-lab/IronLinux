@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+mode="${1:-region}"
+dir="${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots"
+mkdir -p "$dir"
+file="$dir/Iron-$(date +%Y%m%d-%H%M%S).png"
+
+case "$mode" in
+    full)
+        grim "$file"
+        ;;
+    region)
+        geometry="$(slurp)" || exit 0
+        grim -g "$geometry" "$file"
+        ;;
+    *)
+        printf 'usage: %s [full|region]\n' "$0" >&2
+        exit 2
+        ;;
+esac
+
+wl-copy < "$file"
+printf '%s\n' "$file"

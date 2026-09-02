@@ -1,0 +1,38 @@
+#!/bin/sh
+set -eu
+
+export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-wlroots}"
+export XDG_SESSION_DESKTOP="${XDG_SESSION_DESKTOP:-iron-labwc}"
+export XDG_SESSION_TYPE="${XDG_SESSION_TYPE:-wayland}"
+export MOZ_ENABLE_WAYLAND="${MOZ_ENABLE_WAYLAND:-1}"
+export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland;xcb}"
+export GDK_BACKEND="${GDK_BACKEND:-wayland,x11}"
+
+dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE >/dev/null 2>&1 || true
+systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE >/dev/null 2>&1 || true
+
+wallpaper=/usr/share/backgrounds/iron/iron-wallpaper.png
+if [ -r "$wallpaper" ]; then
+    swaybg -m fill -i "$wallpaper" &
+else
+    swaybg -c '#111315' &
+fi
+
+mako &
+waybar &
+nm-applet --indicator &
+blueman-applet &
+udiskie --tray --notify &
+lxpolkit &
+
+wl-paste --type text --watch cliphist store &
+wl-paste --type image --watch cliphist store &
+
+swayidle -w \
+    timeout 900 'swaylock -f -c 111315' \
+    before-sleep 'swaylock -f -c 111315' &
+
+fifo="${XDG_RUNTIME_DIR:-/tmp}/iron-wob.sock"
+rm -f "$fifo"
+mkfifo "$fifo"
+tail -f "$fifo" | wob --border-color '#777d84' --bar-color '#c9ced3' --background-color '#171a1d' &

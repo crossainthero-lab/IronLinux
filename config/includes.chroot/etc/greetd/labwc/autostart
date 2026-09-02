@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+wallpaper=/usr/share/backgrounds/iron/iron-wallpaper.png
+if [ -r "$wallpaper" ]; then
+    swaybg -m fill -i "$wallpaper" &
+else
+    swaybg -c '#111315' &
+fi
+
+gtkgreet -l -s /etc/greetd/style.css
+labwc --exit

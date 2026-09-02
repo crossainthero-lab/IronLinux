@@ -48,8 +48,8 @@ live image and (via Calamares) the installed system:
 - **Archive manager: xarchiver, not file-roller.** file-roller pulls
   GNOME/Nautilus integration libraries; xarchiver is a standalone GTK
   frontend with no DE affinity.
-- **Volume control has no default GUI mixer app.** `pamixer` (CLI) +
-  `wob` (tiny overlay bar), driven by labwc keybindings, is the default
-  interaction model. `pavucontrol` is intentionally left out of the
-  default install (users can `apt install pavucontrol`) to avoid
-  shipping two ways to do the same thing.
+- **Volume control has no default GUI mixer app.** `wpctl` from
+  WirePlumber plus `wob` (tiny overlay bar), driven by Labwc keybindings,
+  is the default interaction model. `pavucontrol` is intentionally left
+  out of the default install (users can `apt install pavucontrol`) to
+  avoid shipping two ways to do the same thing.

@@ -44,9 +44,9 @@ No desktop environment (GNOME/KDE/XFCE/Cinnamon/MATE) is used. Instead:
 | Screen lock | **swaylock** | Standard minimal wlroots screen locker, pairs with wlogout's power menu. |
 | Power/logout menu | **wlogout** | Tiny layer-shell logout/power menu, CSS-themeable - this becomes Iron's custom power menu. |
 | Screenshots | **grim** + **slurp** | grim captures, slurp selects a region; the standard minimal wlroots combo, nothing more needed. |
-| Clipboard | **wl-clipboard** | CLI clipboard access (`wl-copy`/`wl-paste`), used for clipboard functionality and by other tools/scripts. |
+| Clipboard | **wl-clipboard** + **cliphist** | `wl-paste --watch cliphist store` keeps clipboard history alive; `wl-copy` restores selected items from the Iron launcher. |
 | Polkit agent | **lxpolkit** on **polkitd** | Smallest available GTK polkit authentication agent; avoids pulling in a KDE or GNOME agent. |
-| Audio | **PipeWire** + **WirePlumber** + **pamixer** + **wob** | Modern audio/video stack per spec. Volume control is a keybinding (via labwc) calling `pamixer`, shown with `wob`'s tiny overlay bar - no full mixer GUI needed by default (users can `apt install pavucontrol` if they want one). |
+| Audio | **PipeWire** + **WirePlumber** + **wob** | Modern audio/video stack per spec. Volume control is a keybinding (via labwc) calling `wpctl`, shown with `wob`'s tiny overlay bar - no full mixer GUI needed by default (users can `apt install pavucontrol` if they want one). |
 | Networking | **NetworkManager** + **network-manager-applet** | `nm-applet` lives in waybar's tray, giving Wi-Fi/VPN control without a settings app. |
 | Bluetooth | **BlueZ** + **blueman** | Standalone graphical Bluetooth manager, not tied to a DE. |
 
@@ -63,16 +63,14 @@ disk work so Iron Linux doesn't have to.
 ## OS identity
 
 `/etc/os-release` (and friends) are overridden via
-`config/includes.chroot/etc/` to identify the system as Iron Linux while
+`config/includes.chroot/` to identify the system as Iron Linux while
 keeping `ID_LIKE=debian` so tooling that branches on Debian-family
-detection keeps working. This is wired up by a later task; see
-`config/includes.chroot/README.md` for the planned file list.
+detection keeps working.
 
 ## What's deliberately NOT here yet
 
-This bootstrap task only creates the build skeleton, package lists, and
-scripts. It does **not** build the ISO. Actual Labwc/waybar/greetd
-configuration, branding assets wiring, OS identity files, hooks, and the
-Calamares theme are populated by subsequent tasks - see the tables in
+The ISO has still not been built or boot-tested in this repository
+workflow. Branding assets, boot splash artwork, and the Calamares theme
+remain separate follow-up layers - see the tables in
 `config/includes.chroot/README.md`, `config/includes.binary/README.md`
-and `config/hooks/README.md` for exactly where each piece lands.
+and `config/hooks/README.md` for where each piece lands.
