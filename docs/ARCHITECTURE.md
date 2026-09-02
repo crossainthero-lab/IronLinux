@@ -60,17 +60,21 @@ how to do partitioning/bootloader/user-creation correctly, and is used by
 several independent Debian-based distros already - it does the boring
 disk work so Iron Linux doesn't have to.
 
-## OS identity
+## OS identity and branding
 
 `/etc/os-release` (and friends) are overridden via
-`config/includes.chroot/` to identify the system as Iron Linux while
-keeping `ID_LIKE=debian` so tooling that branches on Debian-family
-detection keeps working.
+`config/includes.chroot/` to identify the system as Iron Linux (`NAME="Iron Linux"`,
+`ID=iron`, `ID_LIKE=debian`, `LOGO=iron-linux-logo`).
+
+Branding is unified across all stages:
+- **Bootloader:** BIOS isolinux and UEFI GRUB splash (`config/includes.binary/`)
+- **Boot splash:** Native Plymouth `iron` theme (`usr/share/plymouth/themes/iron/`)
+- **Login screen:** greetd / gtkgreet themed with `login-background.png` and graphite CSS
+- **Desktop:** Labwc session with `wallpaper-4k.png`, `lockscreen.png`, and a shared
+  palette defined in `/usr/share/themes/Iron/` applied to Waybar, Fuzzel, Mako, Foot, and Wlogout.
 
 ## What's deliberately NOT here yet
 
 The ISO has still not been built or boot-tested in this repository
-workflow. Branding assets, boot splash artwork, and the Calamares theme
-remain separate follow-up layers - see the tables in
-`config/includes.chroot/README.md`, `config/includes.binary/README.md`
-and `config/hooks/README.md` for where each piece lands.
+workflow. Calamares installer theming and physical ISO building remain
+the next follow-up layers.

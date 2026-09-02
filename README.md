@@ -8,9 +8,9 @@ Dark iron / machined metal visual identity. No GNOME, no KDE, no XFCE,
 no bundled desktop environment - a small, coherent set of native
 Wayland components instead.
 
-**Status:** build skeleton, package lists, OS identity, and the first
-Labwc/Wayland desktop configuration are in place. The ISO has not been
-built or boot-tested yet.
+**Status:** build skeleton, package lists, OS identity, Labwc/Wayland desktop
+configuration, Plymouth boot theme, greetd login branding, and unified dark
+iron theme palette are in place. The ISO has not been built or boot-tested yet.
 
 ## Quick start
 
@@ -92,14 +92,8 @@ also `dd`-able to a USB stick).
 
 ## Known limitations / not done yet
 
-This task deliberately stops at the build skeleton. Not yet done
-(tracked as later tasks in the same pipeline):
-
-- No ISO has been built or boot-tested.
-- No branding wired into the build (source artwork is being generated
-  separately under `assets/branding/`; nothing there is referenced by
-  `config/` yet).
-- No Calamares theming yet (default `calamares-settings-debian` look).
+- No ISO has been built or boot-tested yet.
+- Calamares installer theming is not complete (currently default `calamares-settings-debian`).
 - Firmware package names in `core.list.chroot` are best-effort and
   should be confirmed with `apt-cache search` on the real Debian build
   host - see `docs/PACKAGES.md`.

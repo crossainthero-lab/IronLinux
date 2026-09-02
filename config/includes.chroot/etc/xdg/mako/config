@@ -1,0 +1,21 @@
+anchor=top-right
+width=360
+height=110
+margin=12
+padding=12
+border-size=1
+border-radius=4
+font=Inter 10
+background-color=#171a1df2
+text-color=#f2f4f5
+border-color=#777d84
+progress-color=over #c9ced3
+default-timeout=6000
+max-visible=4
+
+[urgency=low]
+border-color=#4d535a
+
+[urgency=critical]
+border-color=#b6585d
+default-timeout=0

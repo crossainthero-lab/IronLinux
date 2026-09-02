@@ -1,10 +1,16 @@
 #!/bin/sh
 set -eu
 
+layout="${XDG_CONFIG_HOME:-$HOME/.config}/wlogout/layout"
+[ -r "$layout" ] || layout="/etc/xdg/wlogout/layout"
+
+css="${XDG_CONFIG_HOME:-$HOME/.config}/wlogout/style.css"
+[ -r "$css" ] || css="/etc/xdg/wlogout/style.css"
+
 if command -v wlogout >/dev/null 2>&1; then
     exec wlogout \
-        --layout "$HOME/.config/wlogout/layout" \
-        --css "$HOME/.config/wlogout/style.css" \
+        --layout "$layout" \
+        --css "$css" \
         --protocol layer-shell
 fi
 

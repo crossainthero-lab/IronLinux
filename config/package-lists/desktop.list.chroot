@@ -38,6 +38,10 @@ pcmanfm
 gvfs
 udiskie
 
+## --- Boot splash ---
+plymouth
+plymouth-label
+
 ## --- Wallpaper / lock screen / power menu ---
 swaybg
 swayidle

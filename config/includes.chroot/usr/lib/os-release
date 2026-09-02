@@ -1,0 +1,32 @@
+# Iron Linux OS identity (os-release(5))
+#
+# This file replaces the one installed by Debian's `base-files` package.
+# It is placed at /usr/lib/os-release (not /etc/os-release) deliberately:
+# Debian's base-files already ships /etc/os-release as a symlink to
+# ../usr/lib/os-release, so overwriting the regular file here is
+# unambiguous (no risk of a `cp`-through-symlink surprise) and /etc/os-
+# release automatically serves this same content without being touched
+# directly - `readlink -f /etc/os-release` still resolves correctly and
+# every standard os-release consumer (hostnamectl, neofetch, GNOME/KDE
+# "About" panels, `lsb_release`, browser UA-adjacent OS detection, etc.)
+# sees Iron Linux.
+#
+# Debian identification is preserved the way every real Debian
+# derivative does it (Ubuntu, Devuan, Kali, ...): ID_LIKE=debian, so
+# tooling that branches on "is this a Debian-family system?" keeps
+# working, without pretending to literally *be* unmodified Debian.
+#
+# VERSION_ID/VERSION_CODENAME intentionally describe Iron Linux's own
+# release, not the underlying Debian suite - auto/config targets
+# --distribution stable (a rolling alias), so hardcoding a Debian
+# codename here would go stale across Debian point releases.
+
+NAME="Iron Linux"
+PRETTY_NAME="Iron Linux"
+ID=iron
+ID_LIKE=debian
+VERSION="1.0 (Ingot)"
+VERSION_ID="1.0"
+VERSION_CODENAME=ingot
+ANSI_COLOR="1;37"
+LOGO=iron-linux-logo

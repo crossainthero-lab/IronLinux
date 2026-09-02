@@ -1,0 +1,24 @@
+{
+  "label": "lock",
+  "action": "swaylock -f -c 111315",
+  "text": "Lock",
+  "keybind": "l"
+}
+{
+  "label": "logout",
+  "action": "labwc --exit",
+  "text": "Log Out",
+  "keybind": "e"
+}
+{
+  "label": "reboot",
+  "action": "systemctl reboot",
+  "text": "Restart",
+  "keybind": "r"
+}
+{
+  "label": "shutdown",
+  "action": "systemctl poweroff",
+  "text": "Power Off",
+  "keybind": "s"
+}

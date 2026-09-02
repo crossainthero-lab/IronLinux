@@ -11,7 +11,7 @@ export GDK_BACKEND="${GDK_BACKEND:-wayland,x11}"
 dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE >/dev/null 2>&1 || true
 systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE >/dev/null 2>&1 || true
 
-wallpaper=/usr/share/backgrounds/iron/iron-wallpaper.png
+wallpaper=/usr/share/backgrounds/iron/wallpaper-4k.png
 if [ -r "$wallpaper" ]; then
     swaybg -m fill -i "$wallpaper" &
 else
@@ -28,9 +28,16 @@ lxpolkit &
 wl-paste --type text --watch cliphist store &
 wl-paste --type image --watch cliphist store &
 
-swayidle -w \
-    timeout 900 'swaylock -f -c 111315' \
-    before-sleep 'swaylock -f -c 111315' &
+lockscreen=/usr/share/backgrounds/iron/lockscreen.png
+if [ -r "$lockscreen" ]; then
+    swayidle -w \
+        timeout 900 "swaylock -f -i $lockscreen" \
+        before-sleep "swaylock -f -i $lockscreen" &
+else
+    swayidle -w \
+        timeout 900 'swaylock -f -c 111315' \
+        before-sleep 'swaylock -f -c 111315' &
+fi
 
 fifo="${XDG_RUNTIME_DIR:-/tmp}/iron-wob.sock"
 rm -f "$fifo"

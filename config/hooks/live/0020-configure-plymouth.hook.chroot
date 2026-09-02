@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+# Register and set Iron Plymouth theme as the default
+if [ -f /usr/share/plymouth/themes/iron/iron.plymouth ]; then
+    if command -v update-alternatives >/dev/null 2>&1; then
+        update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth /usr/share/plymouth/themes/iron/iron.plymouth 200
+        update-alternatives --set default.plymouth /usr/share/plymouth/themes/iron/iron.plymouth
+    fi
+fi
+
+# Update initramfs to package the Iron Plymouth splash into initramfs
+if command -v update-initramfs >/dev/null 2>&1; then
+    update-initramfs -u || true
+fi

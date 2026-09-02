@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Iron Linux logo</title>
+  <desc id="desc">A sharp metallic monogram mark for Iron Linux.</desc>
+  <defs>
+    <linearGradient id="iron-fill" x1="118" y1="63" x2="396" y2="444" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#eef2f3"/>
+      <stop offset=".2" stop-color="#8f989d"/>
+      <stop offset=".46" stop-color="#30363a"/>
+      <stop offset=".72" stop-color="#b7bec2"/>
+      <stop offset="1" stop-color="#161a1d"/>
+    </linearGradient>
+    <linearGradient id="iron-edge" x1="90" y1="90" x2="422" y2="422" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fbfcfc"/>
+      <stop offset=".52" stop-color="#707a80"/>
+      <stop offset="1" stop-color="#050708"/>
+    </linearGradient>
+    <radialGradient id="shadow" cx="50%" cy="54%" r="52%">
+      <stop offset=".42" stop-color="#000" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="272" r="214" fill="url(#shadow)"/>
+  <path d="M256 34 430 132v192L256 478 82 324V132L256 34Z" fill="#0c0f11"/>
+  <path d="M256 50 416 140v177L256 459 96 317V140L256 50Z" fill="none" stroke="url(#iron-edge)" stroke-width="18" stroke-linejoin="miter"/>
+  <path d="M178 128h156l34 45H282v166h70l-34 45H180l34-45h58V173h-60l-34-45Z" fill="url(#iron-fill)"/>
+  <path d="M226 173h30v166h-30l-32 45h124l34-45h-70V173h86l-34-45H178l34 45h14Z" fill="none" stroke="#f5f7f8" stroke-opacity=".22" stroke-width="6" stroke-linejoin="miter"/>
+  <path d="M104 146 256 60l152 86" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="4"/>
+  <path d="M104 313 256 447l152-134" fill="none" stroke="#000" stroke-opacity=".42" stroke-width="5"/>
+</svg>

@@ -39,3 +39,4 @@ build.log
 .DS_Store
 *.swp
 *~
+.aigency-worktrees/

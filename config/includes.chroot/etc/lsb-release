@@ -1,0 +1,14 @@
+# Iron Linux - LSB compatibility file.
+#
+# Not installed by base Debian (it only ships this if the `lsb-release`
+# package is pulled in, which Iron Linux does not install - see
+# docs/PACKAGES.md for why). Some third-party installers/scripts still
+# probe /etc/lsb-release directly instead of calling `lsb_release(1)` or
+# parsing os-release, so this static file is shipped for compatibility
+# without adding the `lsb-release` package (and its Python dependency)
+# to the default install.
+
+DISTRIB_ID=IronLinux
+DISTRIB_RELEASE=1.0
+DISTRIB_CODENAME=ingot
+DISTRIB_DESCRIPTION="Iron Linux 1.0"

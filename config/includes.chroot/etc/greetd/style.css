@@ -1,38 +1,50 @@
+@import url("/usr/share/themes/Iron/colors.css");
+
 * {
   all: unset;
   font-family: Inter, sans-serif;
-  color: #f2f4f5;
+  color: @iron_fg_bright;
 }
 
-window,
+window {
+  background-color: transparent;
+  background-image: url("/usr/share/backgrounds/iron/login-background.png");
+  background-size: cover;
+  background-position: center;
+}
+
 #body {
-  background: #111315;
+  background-color: transparent;
 }
 
 #window {
-  background: #171a1d;
-  border: 1px solid #777d84;
-  border-radius: 4px;
-  padding: 28px;
+  background-color: rgba(23, 26, 29, 0.94);
+  border: 1px solid @iron_border;
+  border-radius: 6px;
+  padding: 32px 36px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85);
 }
 
 #clock {
-  color: #aeb4ba;
-  font-size: 14px;
-  margin-bottom: 14px;
+  color: @iron_fg_secondary;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 18px;
 }
 
 entry,
 button,
 combobox {
-  background: #20242a;
-  border: 1px solid #4d535a;
+  background-color: @iron_bg_elevated;
+  color: @iron_fg_bright;
+  border: 1px solid @iron_border_muted;
   border-radius: 4px;
-  padding: 9px 12px;
+  padding: 10px 14px;
 }
 
 button:hover,
 button:focus,
 entry:focus {
-  border-color: #c9ced3;
+  border-color: @iron_border_bright;
+  background-color: @iron_bg_hover;
 }

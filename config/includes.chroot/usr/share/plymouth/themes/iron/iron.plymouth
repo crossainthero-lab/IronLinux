@@ -1,0 +1,9 @@
+[Plymouth Theme]
+Name=Iron Linux
+Description=Iron Linux boot splash theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/iron
+ScriptFile=/usr/share/plymouth/themes/iron/iron.script
+ConsoleLogBackgroundColor=0x111315

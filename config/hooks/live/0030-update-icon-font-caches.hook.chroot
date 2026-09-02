@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+# Update font and icon caches for newly installed Iron Linux assets
+if command -v fc-cache >/dev/null 2>&1; then
+    fc-cache -f || true
+fi
+
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    if [ -d /usr/share/icons/hicolor ]; then
+        gtk-update-icon-cache -f -t /usr/share/icons/hicolor || true
+    fi
+fi

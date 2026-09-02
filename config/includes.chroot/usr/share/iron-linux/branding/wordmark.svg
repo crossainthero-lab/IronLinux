@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">Iron Linux wordmark</title>
+  <desc id="desc">Iron Linux wordmark with a compact metallic mark and sharp industrial typography.</desc>
+  <defs>
+    <linearGradient id="mark-fill" x1="44" y1="36" x2="248" y2="286" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f1f3f4"/>
+      <stop offset=".24" stop-color="#8d969b"/>
+      <stop offset=".55" stop-color="#30363a"/>
+      <stop offset=".8" stop-color="#c0c6c9"/>
+      <stop offset="1" stop-color="#141719"/>
+    </linearGradient>
+    <linearGradient id="type-fill" x1="330" y1="54" x2="1110" y2="238" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f4f5f5"/>
+      <stop offset=".44" stop-color="#b7bec2"/>
+      <stop offset="1" stop-color="#6f787d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="320" fill="none"/>
+  <g transform="translate(50 30) scale(.54)">
+    <path d="M256 34 430 132v192L256 478 82 324V132L256 34Z" fill="#0c0f11"/>
+    <path d="M256 50 416 140v177L256 459 96 317V140L256 50Z" fill="none" stroke="#929ba0" stroke-width="18" stroke-linejoin="miter"/>
+    <path d="M178 128h156l34 45H282v166h70l-34 45H180l34-45h58V173h-60l-34-45Z" fill="url(#mark-fill)"/>
+    <path d="M104 146 256 60l152 86" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="4"/>
+  </g>
+  <text x="340" y="183" fill="url(#type-fill)" font-family="Inter, Montserrat, Avenir Next, DejaVu Sans, Arial, sans-serif" font-size="118" font-weight="800" letter-spacing="10">IRON</text>
+  <text x="728" y="183" fill="#8c969c" font-family="Inter, Montserrat, Avenir Next, DejaVu Sans, Arial, sans-serif" font-size="118" font-weight="500" letter-spacing="10">LINUX</text>
+  <path d="M344 221h694" stroke="#5d666b" stroke-width="4" stroke-linecap="square"/>
+  <path d="M344 232h214" stroke="#c8ced1" stroke-width="2" stroke-linecap="square"/>
+</svg>

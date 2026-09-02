@@ -1,7 +1,9 @@
 #!/bin/sh
 set -eu
 
-wallpaper=/usr/share/backgrounds/iron/iron-wallpaper.png
+# Iron Linux Login Greeter Autostart
+# Display login-background branding under gtkgreet
+wallpaper=/usr/share/backgrounds/iron/login-background.png
 if [ -r "$wallpaper" ]; then
     swaybg -m fill -i "$wallpaper" &
 else

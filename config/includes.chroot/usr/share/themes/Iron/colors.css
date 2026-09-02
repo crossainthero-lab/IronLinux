@@ -1,0 +1,60 @@
+/*
+ * Iron Linux - Shared Theme Color Palette
+ * Industrial precision: dark iron, machined graphite, brushed steel, silver
+ */
+
+/* GTK / CSS Color Definitions */
+@define-color iron_bg_deep #111315;
+@define-color iron_bg_surface #171a1d;
+@define-color iron_bg_card #1d2024;
+@define-color iron_bg_elevated #20242a;
+@define-color iron_bg_hover #2c3137;
+@define-color iron_bg_active #353c45;
+
+@define-color iron_border_subtle #2d3237;
+@define-color iron_border_muted #4d535a;
+@define-color iron_border #777d84;
+@define-color iron_border_bright #c9ced3;
+
+@define-color iron_fg_dim #565d66;
+@define-color iron_fg_muted #858c94;
+@define-color iron_fg_secondary #aeb4ba;
+@define-color iron_fg #d7dbde;
+@define-color iron_fg_bright #f2f4f5;
+@define-color iron_fg_white #ffffff;
+
+@define-color iron_accent_steel #c9ced3;
+@define-color iron_accent_graphite #777d84;
+
+@define-color iron_urgent #b6585d;
+@define-color iron_warning #d5a253;
+@define-color iron_success #7fa36d;
+
+/* CSS Custom Properties */
+:root {
+  --iron-bg-deep: #111315;
+  --iron-bg-surface: #171a1d;
+  --iron-bg-card: #1d2024;
+  --iron-bg-elevated: #20242a;
+  --iron-bg-hover: #2c3137;
+  --iron-bg-active: #353c45;
+
+  --iron-border-subtle: #2d3237;
+  --iron-border-muted: #4d535a;
+  --iron-border: #777d84;
+  --iron-border-bright: #c9ced3;
+
+  --iron-fg-dim: #565d66;
+  --iron-fg-muted: #858c94;
+  --iron-fg-secondary: #aeb4ba;
+  --iron-fg: #d7dbde;
+  --iron-fg-bright: #f2f4f5;
+  --iron-fg-white: #ffffff;
+
+  --iron-accent-steel: #c9ced3;
+  --iron-accent-graphite: #777d84;
+
+  --iron-urgent: #b6585d;
+  --iron-warning: #d5a253;
+  --iron-success: #7fa36d;
+}
