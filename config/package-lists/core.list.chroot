@@ -67,3 +67,11 @@ usbutils
 iproute2
 isc-dhcp-client
 openssh-client
+
+## --- Live Bootloaders ---
+isolinux
+syslinux-common
+syslinux-efi
+grub-efi-amd64-bin
+grub-pc-bin
+

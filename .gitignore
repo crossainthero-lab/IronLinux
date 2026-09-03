@@ -22,6 +22,7 @@
 # ISO / image output
 *.iso
 *.img
+*.squashfs*
 *.zsync
 *.contents
 *.files

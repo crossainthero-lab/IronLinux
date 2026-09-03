@@ -6,4 +6,4 @@
 
 set -e
 
-lb build "${@}" 2>&1 | tee -a build.log
+lb build noauto "${@}" 2>&1 | tee -a build.log

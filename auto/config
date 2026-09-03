@@ -18,31 +18,36 @@
 
 set -e
 
-# Allow pinning to an explicit codename (e.g. IRON_DISTRIBUTION=trixie)
-# for reproducibility; defaults to the "stable" rolling alias so the
-# config keeps working across Debian point/major releases without edits.
-: "${IRON_DISTRIBUTION:=stable}"
+# Allow pinning to an explicit codename (defaults to bookworm for rock-solid stability).
+: "${IRON_DISTRIBUTION:=bookworm}"
 
 lb config noauto \
     --mode debian \
     --distribution "${IRON_DISTRIBUTION}" \
+    --parent-distribution "${IRON_DISTRIBUTION}" \
     --architectures amd64 \
     --archive-areas "main contrib non-free non-free-firmware" \
-    --updates true \
-    --security true \
+    --parent-archive-areas "main contrib non-free non-free-firmware" \
+    --security false \
     --backports false \
+    --mirror-bootstrap "http://deb.debian.org/debian/" \
+    --mirror-chroot "http://deb.debian.org/debian/" \
+    --mirror-binary "http://deb.debian.org/debian/" \
+    --parent-mirror-bootstrap "http://deb.debian.org/debian/" \
+    --parent-mirror-chroot "http://deb.debian.org/debian/" \
+    --parent-mirror-binary "http://deb.debian.org/debian/" \
     \
     --binary-images iso-hybrid \
-    --bootloaders "syslinux,grub-efi" \
-    --uefi-secure-boot disable \
+    --bootloader grub2 \
     --iso-application "Iron Linux" \
     --iso-volume "IRON_LINUX" \
     --iso-preparer "Iron Linux Project" \
     --iso-publisher "Iron Linux Project - https://github.com/" \
     \
     --linux-packages "linux-image" \
-    --firmware-chroot true \
-    --firmware-binary true \
+    --initsystem systemd \
+    --firmware-chroot false \
+    --firmware-binary false \
     \
     --bootappend-live "boot=live components username=iron hostname=iron-linux locales=en_US.UTF-8 keyboard-layouts=us quiet splash" \
     \
@@ -50,7 +55,7 @@ lb config noauto \
     --apt-indices false \
     --apt-source-archives false \
     \
-    --debian-installer none \
+    --debian-installer false \
     \
     --memtest none \
     --win32-loader false \
