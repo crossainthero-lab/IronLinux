@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+for group in lpadmin scanner; do
+    if ! getent group "$group" >/dev/null; then
+        groupadd --system "$group"
+    fi
+done
