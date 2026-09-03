@@ -6,11 +6,7 @@ export PATH="/usr/sbin:/usr/bin:/sbin:/bin:$PATH"
 systemctl set-default graphical.target
 systemctl enable NetworkManager.service
 systemctl enable greetd.service
-systemctl set-default graphical.target
-mkdir -p /etc/systemd/system/graphical.target.wants
-ln -sf /usr/lib/systemd/system/greetd.service /etc/systemd/system/graphical.target.wants/greetd.service
 systemctl enable bluetooth.service
-systemctl set-default graphical.target
 
 # greetd installs an Alias=display-manager.service. Make the graphical
 # target relationship explicit so the live desktop starts even if a

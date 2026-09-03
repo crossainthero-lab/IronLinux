@@ -2,21 +2,65 @@
 set -eu
 
 # Iron Linux Installer Launcher
-# Launches Calamares installer if installed, otherwise displays a friendly message.
+#
+# This is the single canonical entry point used everywhere the live
+# desktop offers to launch the installer: the Labwc keyboard shortcut
+# (Super+I), the applications menu, Waybar's installer button, and every
+# "Install Iron Linux" desktop icon. Keeping one script means there is
+# only one place to fix display/permission wiring.
+#
+# If Calamares is not present (e.g. a minimal rebuild without the
+# installer package list), fail gracefully with a friendly message
+# instead of a confusing crash.
 
-if [ -x /usr/bin/calamares ]; then
-    if [ "$(id -u)" -eq 0 ]; then
-        exec /usr/bin/calamares "$@"
-    elif command -v pkexec >/dev/null 2>&1; then
-        exec pkexec /usr/bin/calamares "$@"
-    else
-        exec sudo /usr/bin/calamares "$@"
-    fi
-else
+if ! command -v calamares >/dev/null 2>&1; then
     msg="Calamares installer is not installed on this system.\n\nTo install software or run system administration, use 'sudo apt install <package>'."
     if command -v zenity >/dev/null 2>&1; then
         zenity --info --title="Iron Linux Installer" --text="$msg" --width=350
     elif command -v foot >/dev/null 2>&1; then
         foot --title="Iron Linux Installer" sh -c "echo '$msg'; read line"
+    else
+        printf '%b\n' "$msg" >&2
     fi
+    exit 1
+fi
+
+restore_fstab() {
+    if [ -e /etc/fstab.orig.calamares ] && [ ! -e /etc/fstab ]; then
+        sudo mv /etc/fstab.orig.calamares /etc/fstab
+    fi
+}
+trap restore_fstab EXIT INT TERM
+
+# live-build leaves a live-session fstab that can confuse Calamares'
+# partition probing; stash it and restore it when Calamares exits.
+if [ -e /etc/fstab ] && [ ! -e /etc/fstab.orig.calamares ]; then
+    sudo mv /etc/fstab /etc/fstab.orig.calamares
+fi
+
+# Calamares' Qt UI runs happiest under X11/XWayland on the live session;
+# the Labwc autostart config enables XWayland for this purpose.
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-xcb}"
+
+if command -v xhost >/dev/null 2>&1; then
+    xhost +si:localuser:root >/dev/null 2>&1 || true
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+    calamares "$@"
+elif command -v pkexec >/dev/null 2>&1; then
+    pkexec env \
+        DISPLAY="${DISPLAY:-}" \
+        XAUTHORITY="${XAUTHORITY:-}" \
+        XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}" \
+        QT_AUTO_SCREEN_SCALE_FACTOR="$QT_AUTO_SCREEN_SCALE_FACTOR" \
+        QT_QPA_PLATFORM="$QT_QPA_PLATFORM" \
+        calamares "$@"
+else
+    sudo calamares "$@"
+fi
+
+if command -v xhost >/dev/null 2>&1; then
+    xhost -si:localuser:root >/dev/null 2>&1 || true
 fi

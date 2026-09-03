@@ -71,11 +71,6 @@ iproute2
 isc-dhcp-client
 openssh-client
 
-## --- Bootloader (GRUB, BIOS + UEFI; also used by Calamares to install
-## the bootloader onto the target disk) ---
-grub-pc-bin
-grub-efi-amd64-bin
-
 ## --- Virtualization / guest integration ---
 # These are safe to ship on bare metal; their services either no-op or
 # activate only when the matching hypervisor/device is detected.
