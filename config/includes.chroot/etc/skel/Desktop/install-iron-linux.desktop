@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install Iron Linux
+Comment=Install Iron Linux to disk
+Exec=iron-installer
+Icon=iron-linux-logo
+Terminal=false
+Categories=System;Installer;

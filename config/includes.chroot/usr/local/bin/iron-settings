@@ -1,0 +1,266 @@
+#!/usr/bin/env python3
+import os
+import sys
+import subprocess
+import shutil
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GLib
+
+class IronSettingsApp(Gtk.Window):
+    def __init__(self):
+        super().__init__(title="Iron Linux Settings")
+        self.set_default_size(680, 500)
+        self.set_position(Gtk.WindowPosition.CENTER)
+
+        # Apply dark theme styling
+        self.apply_css()
+
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        main_box.set_margin_top(15)
+        main_box.set_margin_bottom(15)
+        main_box.set_margin_left(15)
+        main_box.set_margin_right(15)
+        self.add(main_box)
+
+        # Header
+        header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        logo_path = "/usr/share/pixmaps/iron-linux-logo.png"
+        if not os.path.exists(logo_path):
+            logo_path = "/usr/share/iron-linux/branding/logo.png"
+        
+        if os.path.exists(logo_path):
+            pixbuf = Gtk.Image.new_from_file_at_scale(logo_path, 40, 40, True)
+            header.pack_start(pixbuf, False, False, 0)
+        
+        title_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        title_lbl = Gtk.Label()
+        title_lbl.set_markup("<b><span size='large'>Iron Linux Control Panel</span></b>")
+        title_lbl.set_halign(Gtk.Align.START)
+        sub_lbl = Gtk.Label(label="System preferences & display settings")
+        sub_lbl.set_halign(Gtk.Align.START)
+        title_box.pack_start(title_lbl, False, False, 0)
+        title_box.pack_start(sub_lbl, False, False, 0)
+        header.pack_start(title_box, True, True, 0)
+        
+        main_box.pack_start(header, False, False, 0)
+        main_box.pack_start(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL), False, False, 5)
+
+        # Stack and Switcher (Tabs)
+        self.stack = Gtk.Stack()
+        self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self.stack.set_transition_duration(150)
+
+        switcher = Gtk.StackSwitcher()
+        switcher.set_stack(self.stack)
+        main_box.pack_start(switcher, False, False, 0)
+        main_box.pack_start(self.stack, True, True, 5)
+
+        # Add pages
+        self.stack.add_titled(self.create_display_page(), "display", "Display")
+        self.stack.add_titled(self.create_network_page(), "network", "Network")
+        self.stack.add_titled(self.create_audio_page(), "audio", "Audio")
+        self.stack.add_titled(self.create_appearance_page(), "appearance", "Appearance")
+        self.stack.add_titled(self.create_about_page(), "about", "About")
+
+    def apply_css(self):
+        css_data = b"""
+        window { background-color: #111315; color: #d7dbde; }
+        stackswitcher button { background-color: #171a1d; color: #aeb4ba; border: 1px solid #4d535a; border-radius: 4px; padding: 6px 14px; margin: 2px; }
+        stackswitcher button:checked { background-color: #2c3137; color: #f2f4f5; border-color: #777d84; font-weight: bold; }
+        button { background-color: #1d2024; color: #f2f4f5; border: 1px solid #4d535a; border-radius: 4px; padding: 6px 12px; }
+        button:hover { background-color: #2c3137; border-color: #c9ced3; }
+        frame { border: 1px solid #2d3237; border-radius: 4px; background-color: #171a1d; }
+        """
+        provider = Gtk.CssProvider()
+        provider.load_from_data(css_data)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
+    def create_display_page(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+        box.set_margin_top(10)
+
+        lbl = Gtk.Label()
+        lbl.set_markup("<b>Resolution & Screen Configuration</b>")
+        lbl.set_halign(Gtk.Align.START)
+        box.pack_start(lbl, False, False, 0)
+
+        # Detect outputs
+        outputs = []
+        if shutil.which("wlr-randr"):
+            try:
+                res = subprocess.check_output(["wlr-randr"], text=True)
+                for line in res.splitlines():
+                    if line and not line.startswith(" ") and not line.startswith("\t"):
+                        out_name = line.split()[0]
+                        outputs.append(out_name)
+            except Exception:
+                pass
+
+        if not outputs:
+            outputs = ["Wayland-Output-1"]
+
+        grid = Gtk.Grid()
+        grid.set_row_spacing(10)
+        grid.set_column_spacing(15)
+
+        grid.attach(Gtk.Label(label="Display Output:", halign=Gtk.Align.END), 0, 0, 1, 1)
+        self.output_combo = Gtk.ComboBoxText()
+        for o in outputs:
+            self.output_combo.append_text(o)
+        self.output_combo.set_active(0)
+        grid.attach(self.output_combo, 1, 0, 1, 1)
+
+        grid.attach(Gtk.Label(label="Target Resolution:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        self.res_combo = Gtk.ComboBoxText()
+        resolutions = ["1920x1080", "1680x1050", "1600x900", "1440x900", "1366x768", "1280x1024", "1280x800", "1280x720", "1024x768", "800x600"]
+        for r in resolutions:
+            self.res_combo.append_text(r)
+        self.res_combo.set_active(0)
+        grid.attach(self.res_combo, 1, 1, 1, 1)
+
+        apply_btn = Gtk.Button(label="Apply Resolution")
+        apply_btn.connect("clicked", self.on_apply_resolution)
+        grid.attach(apply_btn, 1, 2, 1, 1)
+
+        box.pack_start(grid, False, False, 0)
+        return box
+
+    def on_apply_resolution(self, btn):
+        output = self.output_combo.get_active_text()
+        res = self.res_combo.get_active_text()
+        if output and res and shutil.which("wlr-randr"):
+            try:
+                w, h = res.split("x")
+                subprocess.run(["wlr-randr", "--output", output, "--mode", f"{w}x{h}"], check=False)
+            except Exception as e:
+                print(f"Error applying resolution: {e}")
+
+    def create_network_page(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+        box.set_margin_top(10)
+
+        lbl = Gtk.Label()
+        lbl.set_markup("<b>Network Connections & Wi-Fi</b>")
+        lbl.set_halign(Gtk.Align.START)
+        box.pack_start(lbl, False, False, 0)
+
+        status_lbl = Gtk.Label(label="NetworkManager service active. Manage Wi-Fi, Ethernet & VPN connections.")
+        status_lbl.set_halign(Gtk.Align.START)
+        box.pack_start(status_lbl, False, False, 0)
+
+        net_btn = Gtk.Button(label="Open Network Connections Manager")
+        net_btn.connect("clicked", lambda x: subprocess.Popen(["nm-connection-editor"]))
+        box.pack_start(net_btn, False, False, 0)
+
+        return box
+
+    def create_audio_page(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+        box.set_margin_top(10)
+
+        lbl = Gtk.Label()
+        lbl.set_markup("<b>Audio & PipeWire Sound Stack</b>")
+        lbl.set_halign(Gtk.Align.START)
+        box.pack_start(lbl, False, False, 0)
+
+        vol_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        vol_box.pack_start(Gtk.Label(label="Volume Control:"), False, False, 0)
+        
+        mute_btn = Gtk.Button(label="Mute / Unmute")
+        mute_btn.connect("clicked", lambda x: subprocess.run(["iron-volume", "mute"]))
+        vol_box.pack_start(mute_btn, False, False, 0)
+
+        up_btn = Gtk.Button(label="Volume +")
+        up_btn.connect("clicked", lambda x: subprocess.run(["iron-volume", "up"]))
+        vol_box.pack_start(up_btn, False, False, 0)
+
+        down_btn = Gtk.Button(label="Volume -")
+        down_btn.connect("clicked", lambda x: subprocess.run(["iron-volume", "down"]))
+        vol_box.pack_start(down_btn, False, False, 0)
+
+        box.pack_start(vol_box, False, False, 0)
+        return box
+
+    def create_appearance_page(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+        box.set_margin_top(10)
+
+        lbl = Gtk.Label()
+        lbl.set_markup("<b>Desktop Wallpaper & Theme</b>")
+        lbl.set_halign(Gtk.Align.START)
+        box.pack_start(lbl, False, False, 0)
+
+        self.wall_combo = Gtk.ComboBoxText()
+        wall_dir = "/usr/share/backgrounds/iron"
+        if os.path.exists(wall_dir):
+            for f in os.listdir(wall_dir):
+                if f.endswith(".png") or f.endswith(".jpg"):
+                    self.wall_combo.append_text(f)
+        else:
+            self.wall_combo.append_text("wallpaper-4k.png")
+        
+        self.wall_combo.set_active(0)
+        box.pack_start(self.wall_combo, False, False, 0)
+
+        apply_btn = Gtk.Button(label="Set Background Wallpaper")
+        apply_btn.connect("clicked", self.on_apply_wallpaper)
+        box.pack_start(apply_btn, False, False, 0)
+
+        return box
+
+    def on_apply_wallpaper(self, btn):
+        wall_name = self.wall_combo.get_active_text()
+        if wall_name:
+            full_path = os.path.join("/usr/share/backgrounds/iron", wall_name)
+            if os.path.exists(full_path):
+                subprocess.run(["pkill", "swaybg"], check=False)
+                subprocess.Popen(["swaybg", "-m", "fill", "-i", full_path])
+
+    def create_about_page(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_margin_top(10)
+
+        lbl = Gtk.Label()
+        lbl.set_markup("<b>About Iron Linux</b>")
+        lbl.set_halign(Gtk.Align.START)
+        box.pack_start(lbl, False, False, 0)
+
+        info_grid = Gtk.Grid()
+        info_grid.set_row_spacing(8)
+        info_grid.set_column_spacing(15)
+
+        kernel = os.uname().release
+        architecture = os.uname().machine
+
+        info_grid.attach(Gtk.Label(label="OS Name:", halign=Gtk.Align.END), 0, 0, 1, 1)
+        info_grid.attach(Gtk.Label(label="Iron Linux 1.0 (Ingot)", halign=Gtk.Align.START), 1, 0, 1, 1)
+
+        info_grid.attach(Gtk.Label(label="Base System:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        info_grid.attach(Gtk.Label(label="Debian (apt + .deb)", halign=Gtk.Align.START), 1, 1, 1, 1)
+
+        info_grid.attach(Gtk.Label(label="Desktop Environment:", halign=Gtk.Align.END), 0, 2, 1, 1)
+        info_grid.attach(Gtk.Label(label="Labwc (Wayland) + Waybar", halign=Gtk.Align.START), 1, 2, 1, 1)
+
+        info_grid.attach(Gtk.Label(label="Kernel Version:", halign=Gtk.Align.END), 0, 3, 1, 1)
+        info_grid.attach(Gtk.Label(label=kernel, halign=Gtk.Align.START), 1, 3, 1, 1)
+
+        info_grid.attach(Gtk.Label(label="Architecture:", halign=Gtk.Align.END), 0, 4, 1, 1)
+        info_grid.attach(Gtk.Label(label=architecture, halign=Gtk.Align.START), 1, 4, 1, 1)
+
+        box.pack_start(info_grid, False, False, 0)
+        return box
+
+def main():
+    app = IronSettingsApp()
+    app.connect("destroy", Gtk.main_quit)
+    app.show_all()
+    Gtk.main()
+
+if __name__ == "__main__":
+    main()

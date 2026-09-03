@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+
+# Iron Linux Installer Launcher
+# Launches Calamares installer if installed, otherwise displays a friendly message.
+
+if [ -x /usr/bin/calamares ]; then
+    if [ "$(id -u)" -eq 0 ]; then
+        exec /usr/bin/calamares "$@"
+    elif command -v pkexec >/dev/null 2>&1; then
+        exec pkexec /usr/bin/calamares "$@"
+    else
+        exec sudo /usr/bin/calamares "$@"
+    fi
+else
+    msg="Calamares installer is not installed on this system.\n\nTo install software or run system administration, use 'sudo apt install <package>'."
+    if command -v zenity >/dev/null 2>&1; then
+        zenity --info --title="Iron Linux Installer" --text="$msg" --width=350
+    elif command -v foot >/dev/null 2>&1; then
+        foot --title="Iron Linux Installer" sh -c "echo '$msg'; read line"
+    fi
+fi

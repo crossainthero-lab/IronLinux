@@ -39,4 +39,6 @@ build.log
 .DS_Store
 *.swp
 *~
+__pycache__/
+*.pyc
 .aigency-worktrees/

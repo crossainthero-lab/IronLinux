@@ -58,6 +58,12 @@
     <keybind key="W-e">
       <action name="Execute" command="pcmanfm" />
     </keybind>
+    <keybind key="W-i">
+      <action name="Execute" command="iron-installer" />
+    </keybind>
+    <keybind key="W-s">
+      <action name="Execute" command="iron-settings" />
+    </keybind>
     <keybind key="W-b">
       <action name="Execute" command="firefox-esr" />
     </keybind>
