@@ -18,3 +18,13 @@ live-tools
 ## --- Installer ---
 calamares
 calamares-settings-debian
+rsync
+cryptsetup
+keyutils
+efibootmgr
+os-prober
+x11-xserver-utils
+grub-pc-bin
+grub-efi-amd64-bin
+btrfs-progs
+xfsprogs

@@ -1,0 +1,6 @@
+---
+type: "job"
+name: "iron-disk-warning"
+interface: "process"
+command: "/usr/share/calamares/helpers/iron-disk-warning"
+timeout: 30

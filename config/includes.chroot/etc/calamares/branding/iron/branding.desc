@@ -1,0 +1,46 @@
+---
+componentName: iron
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 880px,620px
+windowPlacement: center
+
+strings:
+  productName: "Iron Linux"
+  shortProductName: "Iron"
+  version: "1.0"
+  shortVersion: "1.0"
+  versionedName: "Iron Linux 1.0"
+  shortVersionedName: "Iron 1.0"
+  bootloaderEntryName: "Iron Linux"
+  productUrl: "https://github.com/"
+  supportUrl: "https://github.com/"
+  knownIssuesUrl: "https://github.com/"
+  releaseNotesUrl: "https://github.com/"
+
+sidebar: widget
+navigation: widget
+
+images:
+  productLogo: "logo.png"
+  productIcon: "logo.png"
+  productWelcome: "logo.png"
+
+slideshow: "show.qml"
+
+style:
+  SidebarBackground: "#111315"
+  SidebarText: "#c9ced3"
+  SidebarTextCurrent: "#ffffff"
+  SidebarBackgroundCurrent: "#2f363c"
+  SidebarTextSelect: "#ffffff"
+  SidebarBackgroundSelect: "#3f4850"
+  Background: "#171a1d"
+  BackgroundAlternate: "#202428"
+  Text: "#d7dce0"
+  TextHighlight: "#ffffff"
+  Button: "#2f363c"
+  ButtonText: "#ffffff"
+
+slideshowAPI: 2

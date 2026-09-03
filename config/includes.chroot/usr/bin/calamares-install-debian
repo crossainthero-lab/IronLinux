@@ -1,0 +1,2 @@
+#!/bin/sh
+exec calamares-install-iron "$@"

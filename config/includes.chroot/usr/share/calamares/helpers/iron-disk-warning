@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+cat >&2 <<'EOF'
+Iron Linux installer: final destructive disk changes begin now.
+
+The Summary page and final confirmation dialog have already shown the
+selected partitioning operations. From this point Calamares may create,
+format, resize, or delete partitions according to that confirmed plan.
+EOF
