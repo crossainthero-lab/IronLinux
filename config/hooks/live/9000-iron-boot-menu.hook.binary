@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+
+cd ..
+exec ./config/hooks/9000-iron-boot-menu.hook.binary

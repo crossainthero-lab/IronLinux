@@ -1,0 +1,148 @@
+#!/bin/sh
+set -e
+
+BASE_ARGS="boot=live components username=iron hostname=iron-linux locales=en_US.UTF-8 keyboard-layouts=us"
+DEFAULT_ARGS="${BASE_ARGS} quiet splash"
+SAFE_ARGS="${BASE_ARGS} nomodeset plymouth.enable=0"
+VERBOSE_ARGS="${BASE_ARGS} loglevel=7 systemd.show_status=true plymouth.enable=0"
+DEBUG_ARGS="${BASE_ARGS} loglevel=7 systemd.show_status=true systemd.log_level=debug systemd.log_target=console plymouth.enable=0"
+RECOVERY_ARGS="${BASE_ARGS} nomodeset plymouth.enable=0 systemd.unit=rescue.target"
+
+find_first() {
+    for path in "$@"; do
+        if [ -e "$path" ]; then
+            printf '%s\n' "$path"
+            return 0
+        fi
+    done
+    return 1
+}
+
+KERNEL="$(find_first binary/live/vmlinuz binary/live/vmlinuz-* binary/casper/vmlinuz binary/casper/vmlinuz-* || true)"
+INITRD="$(find_first binary/live/initrd.img binary/live/initrd.img-* binary/casper/initrd.img binary/casper/initrd.img-* || true)"
+
+if [ -z "$KERNEL" ] || [ -z "$INITRD" ]; then
+    echo "iron-linux: cannot write boot menu; missing live kernel/initrd under binary/live or binary/casper" >&2
+    exit 1
+fi
+
+KERNEL="/${KERNEL#binary/}"
+INITRD="/${INITRD#binary/}"
+
+write_grub_cfg() {
+    cfg="$1"
+    mkdir -p "$(dirname "$cfg")"
+    cat > "$cfg" <<EOF
+set default=0
+set timeout=8
+
+if loadfont /boot/grub/unicode.pf2 ; then
+    set gfxmode=auto
+    insmod all_video
+    insmod gfxterm
+    terminal_output gfxterm
+fi
+
+if background_image /boot/grub/splash.png ; then
+    set color_normal=white/black
+    set color_highlight=black/light-gray
+else
+    set menu_color_normal=white/black
+    set menu_color_highlight=black/light-gray
+fi
+
+menuentry "Try or Install Iron Linux" {
+    linux ${KERNEL} ${DEFAULT_ARGS}
+    initrd ${INITRD}
+}
+
+menuentry "Iron Linux (Safe Graphics)" {
+    linux ${KERNEL} ${SAFE_ARGS}
+    initrd ${INITRD}
+}
+
+submenu "Advanced Options" {
+    menuentry "Iron Linux (Verbose Boot)" {
+        linux ${KERNEL} ${VERBOSE_ARGS}
+        initrd ${INITRD}
+    }
+
+    menuentry "Iron Linux (Debug Boot)" {
+        linux ${KERNEL} ${DEBUG_ARGS}
+        initrd ${INITRD}
+    }
+
+    menuentry "Iron Linux (Recovery / Rescue Target)" {
+        linux ${KERNEL} ${RECOVERY_ARGS}
+        initrd ${INITRD}
+    }
+}
+EOF
+}
+
+write_syslinux_cfg() {
+    cfg="$1"
+    dir="$(dirname "$cfg")"
+    mkdir -p "$dir"
+    cat > "$cfg" <<EOF
+UI vesamenu.c32
+PROMPT 0
+TIMEOUT 80
+MENU TITLE Iron Linux
+MENU BACKGROUND splash.png
+MENU TABMSG Press ENTER to boot or TAB to edit a menu entry
+MENU WIDTH 78
+MENU MARGIN 6
+MENU ROWS 8
+MENU VSHIFT 8
+MENU COLOR title * #ffffffff *
+MENU COLOR border * #00000000 #00000000 none
+MENU COLOR sel * #ff111827 #ffdde4f0 *
+MENU COLOR hotsel 1;7;37;40 #ff111827 #ffdde4f0 *
+MENU COLOR tabmsg * #ffffffff #00000000 *
+MENU COLOR help 37;40 #ffdde4f0 #00000000 none
+
+LABEL iron-live
+    MENU LABEL Try or Install Iron Linux
+    MENU DEFAULT
+    KERNEL ${KERNEL}
+    APPEND initrd=${INITRD} ${DEFAULT_ARGS}
+
+LABEL iron-safe
+    MENU LABEL Iron Linux (Safe Graphics)
+    KERNEL ${KERNEL}
+    APPEND initrd=${INITRD} ${SAFE_ARGS}
+
+MENU BEGIN advanced
+MENU TITLE Advanced Options
+
+LABEL iron-verbose
+    MENU LABEL Iron Linux (Verbose Boot)
+    KERNEL ${KERNEL}
+    APPEND initrd=${INITRD} ${VERBOSE_ARGS}
+
+LABEL iron-debug
+    MENU LABEL Iron Linux (Debug Boot)
+    KERNEL ${KERNEL}
+    APPEND initrd=${INITRD} ${DEBUG_ARGS}
+
+LABEL iron-recovery
+    MENU LABEL Iron Linux (Recovery / Rescue Target)
+    KERNEL ${KERNEL}
+    APPEND initrd=${INITRD} ${RECOVERY_ARGS}
+
+MENU END
+EOF
+}
+
+if [ -d binary/boot/grub ]; then
+    write_grub_cfg binary/boot/grub/grub.cfg
+fi
+
+if [ -d binary/isolinux ]; then
+    write_syslinux_cfg binary/isolinux/isolinux.cfg
+fi
+
+if [ -d binary/syslinux ]; then
+    write_syslinux_cfg binary/syslinux/syslinux.cfg
+fi

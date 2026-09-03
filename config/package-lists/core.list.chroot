@@ -28,6 +28,9 @@ firmware-amd-graphics
 firmware-iwlwifi
 firmware-realtek
 firmware-atheros
+firmware-brcm80211
+firmware-mediatek
+firmware-zd1211
 firmware-sof-signed
 
 ## --- Init system / core userspace ---
@@ -68,10 +71,15 @@ iproute2
 isc-dhcp-client
 openssh-client
 
-## --- Live Bootloaders ---
-isolinux
-syslinux-common
-syslinux-efi
-grub-efi-amd64-bin
+## --- Bootloader (GRUB, BIOS + UEFI; also used by Calamares to install
+## the bootloader onto the target disk) ---
 grub-pc-bin
+grub-efi-amd64-bin
 
+## --- Virtualization / guest integration ---
+# These are safe to ship on bare metal; their services either no-op or
+# activate only when the matching hypervisor/device is detected.
+qemu-guest-agent
+spice-vdagent
+open-vm-tools
+open-vm-tools-desktop

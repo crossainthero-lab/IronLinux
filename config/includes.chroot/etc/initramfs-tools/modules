@@ -1,0 +1,57 @@
+# Iron Linux live/install media must boot on generic x86_64 hardware,
+# common hypervisors, and USB-created ISO media. Keep MODULES=most in
+# initramfs.conf, and force these critical storage, input, graphics,
+# network and audio modules into the initramfs when they exist.
+
+# Generic block/storage paths
+ahci
+libahci
+sd_mod
+sr_mod
+nvme
+uas
+usb_storage
+
+# USB controllers and HID input
+xhci_pci
+xhci_hcd
+ehci_pci
+ehci_hcd
+ohci_hcd
+uhci_hcd
+hid_generic
+usbhid
+
+# QEMU/KVM, VirtIO and QXL
+virtio
+virtio_pci
+virtio_blk
+virtio_scsi
+virtio_net
+virtio_gpu
+qxl
+
+# VMware
+vmw_pvscsi
+vmxnet3
+vmwgfx
+
+# Hyper-V
+hv_vmbus
+hv_storvsc
+hv_netvsc
+hv_utils
+
+# Common Intel/AMD graphics and framebuffer fallback
+i915
+amdgpu
+radeon
+simpledrm
+efifb
+vesafb
+
+# Common audio
+snd_hda_intel
+snd_hda_codec_hdmi
+snd_intel8x0
+snd_usb_audio

@@ -76,6 +76,10 @@ if ! command -v lb >/dev/null 2>&1; then
     fail "live-build not found. Install it first: apt install live-build (see docs/BUILD.md)."
 fi
 
+if ! lb config --help 2>&1 | grep -q -- '--bootloaders'; then
+    fail "this live-build only supports the legacy singular --bootloader flag. Build Iron Linux in a current Debian stable/trixie live-build environment so BIOS+EFI hybrid bootloader generation is available."
+fi
+
 if [[ ! -x auto/config ]]; then
     fail "auto/config is missing or not executable. Run: chmod +x auto/config auto/build auto/clean"
 fi
@@ -84,7 +88,7 @@ fi
 
 if $DO_CLEAN; then
     log "Cleaning previous build state (lb clean)..."
-    lb clean --purge
+    lb clean noauto --purge
     rm -f "${IMAGE_OUT}" "${CHECKSUM_OUT}" build.log
 else
     log "Skipping clean (--no-clean given)."
@@ -105,7 +109,7 @@ fi
 # --- Build -------------------------------------------------------------
 
 log "Building Iron Linux (lb build). This can take a while..."
-lb build 2>&1 | tee build.log
+lb build noauto 2>&1 | tee build.log
 
 # --- Locate + rename output ---------------------------------------------
 
@@ -125,6 +129,13 @@ fi
 
 mv -f "$CANDIDATE" "${IMAGE_OUT}"
 sha256sum "${IMAGE_OUT}" > "${CHECKSUM_OUT}"
+
+log "Validating ISO boot structure..."
+"$(dirname "${BASH_SOURCE[0]}")/scripts/validate-iso.sh" "${IMAGE_OUT}" >/tmp/iron-linux-iso-validation.log || {
+    cat /tmp/iron-linux-iso-validation.log >&2
+    fail "ISO did not pass boot-structure validation"
+}
+cat /tmp/iron-linux-iso-validation.log
 
 log "Done. Output: ${IMAGE_OUT}"
 log "Checksum:   $(cat "${CHECKSUM_OUT}")"

@@ -15,6 +15,7 @@
 /cache/
 /chroot/
 /chroot.*/
+/chroot.packages.*
 /binary/
 /binary.*
 /local/
@@ -35,6 +36,11 @@
 
 # live-build logs
 build.log
+
+# live-build copies/symlinks its stock hook set during `lb config`.
+/config/hooks/live/0010-disable-kexec-tools.hook.chroot
+/config/hooks/live/0050-disable-sysvinit-tmpfs.hook.chroot
+/config/hooks/normal/*.hook.chroot
 
 # editor / OS cruft
 .DS_Store
