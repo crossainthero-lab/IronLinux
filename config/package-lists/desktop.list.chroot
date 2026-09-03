@@ -13,6 +13,7 @@
 labwc
 xwayland
 wayland-utils
+wlr-randr
 
 ## --- Session login (Wayland-native, systemd-logind backed - no seatd
 ##     needed since systemd already provides seat/session management) ---
@@ -72,8 +73,11 @@ blueman
 ## --- Input / hardware controls ---
 brightnessctl
 
-## --- Fonts (UI + monospace; branding fonts land in assets/branding/fonts
-##     and are wired in via includes.chroot by the branding task) ---
+## --- System helpers & scripting ---
+python3-gi
+
+## --- Fonts & Themes ---
 fonts-inter
 fonts-jetbrains-mono
 fonts-noto-color-emoji
+hicolor-icon-theme

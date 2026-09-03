@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Install Iron Linux
+Comment=Install Iron Linux to your computer
+Exec=iron-installer
+Icon=iron-linux-logo
+Terminal=false
+Categories=System;Installer;GTK;
+Keywords=install;installer;calamares;iron;

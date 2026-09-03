@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Power & Session
+Comment=Log out, restart, lock or shut down
+Exec=iron-power-menu
+Icon=system-shutdown
+Terminal=false
+Categories=System;
+Keywords=power;logout;shutdown;reboot;lock;

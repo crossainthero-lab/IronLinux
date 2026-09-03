@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_menu>
   <menu id="root-menu" label="Iron Linux">
+    <item label="Install Iron Linux">
+      <action name="Execute" command="iron-installer" />
+    </item>
+    <separator />
     <item label="Terminal">
       <action name="Execute" command="foot" />
     </item>
@@ -10,8 +14,15 @@
     <item label="Files">
       <action name="Execute" command="pcmanfm" />
     </item>
-    <item label="Editor">
+    <item label="Text Editor">
       <action name="Execute" command="mousepad" />
+    </item>
+    <separator />
+    <item label="Iron Settings">
+      <action name="Execute" command="iron-settings" />
+    </item>
+    <item label="Network Connections">
+      <action name="Execute" command="nm-connection-editor" />
     </item>
     <separator />
     <item label="Applications">
@@ -27,7 +38,7 @@
     <item label="Reconfigure Desktop">
       <action name="Reconfigure" />
     </item>
-    <item label="Power">
+    <item label="Power &amp; Session">
       <action name="Execute" command="iron-power-menu" />
     </item>
   </menu>

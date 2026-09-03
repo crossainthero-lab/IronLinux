@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+export PATH="/usr/sbin:/usr/bin:/sbin:/bin:$PATH"
+
 # Update font and icon caches for newly installed Iron Linux assets
 if command -v fc-cache >/dev/null 2>&1; then
     fc-cache -f || true

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Iron Linux Settings
+Comment=Control display, network, sound, and theme preferences
+Exec=iron-settings
+Icon=preferences-system
+Terminal=false
+Categories=Settings;DesktopSettings;GTK;
+Keywords=settings;display;resolution;network;sound;wallpaper;iron;
