@@ -22,6 +22,8 @@
 
 # ISO / image output
 *.iso
+# Oversized backup image; keep it local and out of Git history.
+/build-artifacts/iron-linux-amd64.with-backup.iso
 *.img
 *.squashfs*
 *.zsync
