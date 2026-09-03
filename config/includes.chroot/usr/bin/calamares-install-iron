@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eu
+
+restore_fstab() {
+    if [ -e /etc/fstab.orig.calamares ] && [ ! -e /etc/fstab ]; then
+        sudo mv /etc/fstab.orig.calamares /etc/fstab
+    fi
+}
+trap restore_fstab EXIT INT TERM
+
+# live-build leaves a live-session fstab that can confuse partition probing.
+if [ -e /etc/fstab ] && [ ! -e /etc/fstab.orig.calamares ]; then
+    sudo mv /etc/fstab /etc/fstab.orig.calamares
+fi
+
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-xcb}"
+
+if command -v xhost >/dev/null 2>&1; then
+    xhost +si:localuser:root >/dev/null 2>&1 || true
+fi
+
+pkexec env \
+    DISPLAY="${DISPLAY:-}" \
+    XAUTHORITY="${XAUTHORITY:-}" \
+    XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}" \
+    QT_AUTO_SCREEN_SCALE_FACTOR="$QT_AUTO_SCREEN_SCALE_FACTOR" \
+    QT_QPA_PLATFORM="$QT_QPA_PLATFORM" \
+    calamares
+
+if command -v xhost >/dev/null 2>&1; then
+    xhost -si:localuser:root >/dev/null 2>&1 || true
+fi

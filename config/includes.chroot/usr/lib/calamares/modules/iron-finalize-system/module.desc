@@ -1,0 +1,6 @@
+---
+type: "job"
+name: "iron-finalize-system"
+interface: "process"
+command: "/usr/share/calamares/helpers/iron-finalize-system"
+timeout: 300

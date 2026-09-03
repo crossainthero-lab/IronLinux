@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+target="$(mount | awk '/ proc / && /calamares/ { sub("/proc$", "", $3); print $3; exit }')"
+
+if [ -z "$target" ] || [ ! -d "$target/etc" ]; then
+    echo "Unable to locate Calamares target root for Iron finalization" >&2
+    exit 1
+fi
+
+if [ -x "$target/usr/sbin/update-initramfs" ]; then
+    chroot "$target" /usr/sbin/update-initramfs -u -k all
+fi
+
+if [ -x "$target/usr/sbin/update-grub" ]; then
+    chroot "$target" /usr/sbin/update-grub
+fi
