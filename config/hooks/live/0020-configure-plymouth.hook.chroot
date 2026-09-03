@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
+
 # Register and set Iron Plymouth theme as the default
 if [ -f /usr/share/plymouth/themes/iron/iron.plymouth ]; then
     if command -v update-alternatives >/dev/null 2>&1; then
@@ -11,5 +13,5 @@ fi
 
 # Update initramfs to package the Iron Plymouth splash into initramfs
 if command -v update-initramfs >/dev/null 2>&1; then
-    update-initramfs -u || true
+    update-initramfs -u -k all || true
 fi

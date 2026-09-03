@@ -5,4 +5,4 @@
 
 set -e
 
-lb clean "${@}"
+lb clean noauto "${@}"

@@ -4,3 +4,14 @@ set -e
 systemctl enable NetworkManager.service
 systemctl enable greetd.service
 systemctl enable bluetooth.service
+systemctl set-default graphical.target
+
+# greetd installs an Alias=display-manager.service. Make the graphical
+# target relationship explicit so the live desktop starts even if a
+# live-build/systemd-helper variant does not wire the alias as expected.
+mkdir -p /etc/systemd/system/graphical.target.wants
+ln -sf /usr/lib/systemd/system/greetd.service /etc/systemd/system/graphical.target.wants/greetd.service
+
+# A live desktop must not appear hung while waiting for network that may
+# not exist yet, especially on fresh VMs or offline laptops.
+systemctl mask NetworkManager-wait-online.service || true

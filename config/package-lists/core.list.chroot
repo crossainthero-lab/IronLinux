@@ -28,6 +28,9 @@ firmware-amd-graphics
 firmware-iwlwifi
 firmware-realtek
 firmware-atheros
+firmware-brcm80211
+firmware-mediatek
+firmware-zd1211
 firmware-sof-signed
 
 ## --- Init system / core userspace ---
@@ -67,3 +70,11 @@ usbutils
 iproute2
 isc-dhcp-client
 openssh-client
+
+## --- Virtualization / guest integration ---
+# These are safe to ship on bare metal; their services either no-op or
+# activate only when the matching hypervisor/device is detected.
+qemu-guest-agent
+spice-vdagent
+open-vm-tools
+open-vm-tools-desktop

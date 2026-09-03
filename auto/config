@@ -33,7 +33,7 @@ lb config noauto \
     --backports false \
     \
     --binary-images iso-hybrid \
-    --bootloaders "syslinux,grub-efi" \
+    --bootloaders "grub-pc,grub-efi" \
     --uefi-secure-boot disable \
     --iso-application "Iron Linux" \
     --iso-volume "IRON_LINUX" \

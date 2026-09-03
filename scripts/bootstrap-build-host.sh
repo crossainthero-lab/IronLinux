@@ -33,6 +33,7 @@ apt-get install -y --no-install-recommends \
     debootstrap \
     xorriso \
     isolinux \
+    syslinux-utils \
     syslinux-efi \
     grub-pc-bin \
     grub-efi-amd64-bin \
