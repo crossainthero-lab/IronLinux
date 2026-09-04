@@ -21,7 +21,13 @@ greetd
 gtkgreet
 
 ## --- Authentication agent (polkit) ---
+# pkexec is its own binary package on Debian trixie (built from the same
+# "polkit" source as polkitd) - it is NOT bundled into polkitd or into a
+# "policykit-1" umbrella package. iron-installer relies on pkexec to
+# elevate Calamares graphically, so list it explicitly instead of relying
+# on it being pulled in as a Recommends of something else.
 polkitd
+pkexec
 lxpolkit
 
 ## --- Panel / launcher ---

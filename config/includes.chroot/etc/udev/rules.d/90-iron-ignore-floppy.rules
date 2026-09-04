@@ -1,0 +1,19 @@
+# Iron Linux - tell udisks2 to ignore legacy floppy drives.
+#
+# Root cause (found via a real QEMU boot, not guessed): QEMU's default PC
+# chipset (i440fx/q35) wires up a legacy ISA floppy controller and exposes
+# an empty /dev/fd0 even when no -fda/-drive if=floppy was given. udisks2's
+# own rules (/lib/udev/rules.d/80-udisks2.rules) tag KERNEL=="fd*" with
+# ID_DRIVE_FLOPPY=1 but deliberately do NOT ignore it - real floppy
+# hardware is meant to be visible/mountable. udisksd's device coldplug
+# probe then tries to read it, the kernel logs a genuine I/O error
+# ("floppy: error 10 while reading block 0"), and udiskie (or gvfs)
+# surfaces that as a "Job failed: failed to mount /dev/fd0" notification
+# on every single boot, live or installed, floppy hardware present or not.
+#
+# Floppy drives are essentially extinct; Iron Linux does not want this
+# noise by default. A user with real, wanted floppy hardware can still
+# mount it manually (`udisksctl mount -b /dev/fd0` or plain `mount`) -
+# UDISKS_IGNORE only hides it from automount/UI, it doesn't disable the
+# device or the floppy driver.
+SUBSYSTEM=="block", KERNEL=="fd[0-9]*", ENV{UDISKS_IGNORE}="1"

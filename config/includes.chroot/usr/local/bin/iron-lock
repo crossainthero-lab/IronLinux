@@ -1,0 +1,15 @@
+#!/bin/sh
+# Iron Linux - single canonical screen-lock entry point.
+#
+# Used by both the Super+L keybind (rc.xml) and swayidle's timeout/
+# before-sleep hooks (autostart), so the lock look stays consistent and
+# there is exactly one place to fix if swaylock's invocation needs to
+# change.
+set -eu
+
+lockscreen=/usr/share/backgrounds/iron/lockscreen.png
+if [ -r "$lockscreen" ]; then
+    exec swaylock -f -i "$lockscreen"
+else
+    exec swaylock -f -c 111315
+fi

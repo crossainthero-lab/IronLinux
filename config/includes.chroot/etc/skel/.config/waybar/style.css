@@ -16,13 +16,20 @@ window#waybar {
 
 #custom-launcher,
 #workspaces,
+#taskbar,
 #clock,
 #tray,
+#custom-install,
 #network,
+#bluetooth,
 #pulseaudio,
 #battery,
 #custom-power {
   padding: 0 10px;
+}
+
+#custom-install {
+  color: @iron_accent_steel;
 }
 
 #custom-launcher {
@@ -63,9 +70,31 @@ window#waybar {
   color: @iron_fg_white;
 }
 
+#taskbar item {
+  padding: 0 8px;
+  color: @iron_fg_muted;
+}
+
+#taskbar item.active {
+  color: @iron_fg_bright;
+  background: @iron_bg_elevated;
+}
+
+#taskbar item:hover {
+  background: @iron_bg_hover;
+  color: @iron_fg_white;
+}
+
+#bluetooth.disabled {
+  color: @iron_fg_muted;
+}
+
 #custom-power:hover,
+#custom-install:hover,
 #network:hover,
+#bluetooth:hover,
 #pulseaudio:hover,
+#taskbar item:hover,
 #workspaces button:hover {
   background: @iron_bg_hover;
   color: @iron_fg_white;

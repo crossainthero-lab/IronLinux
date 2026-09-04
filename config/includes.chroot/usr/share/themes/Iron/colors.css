@@ -30,31 +30,14 @@
 @define-color iron_warning #d5a253;
 @define-color iron_success #7fa36d;
 
-/* CSS Custom Properties */
-:root {
-  --iron-bg-deep: #111315;
-  --iron-bg-surface: #171a1d;
-  --iron-bg-card: #1d2024;
-  --iron-bg-elevated: #20242a;
-  --iron-bg-hover: #2c3137;
-  --iron-bg-active: #353c45;
-
-  --iron-border-subtle: #2d3237;
-  --iron-border-muted: #4d535a;
-  --iron-border: #777d84;
-  --iron-border-bright: #c9ced3;
-
-  --iron-fg-dim: #565d66;
-  --iron-fg-muted: #858c94;
-  --iron-fg-secondary: #aeb4ba;
-  --iron-fg: #d7dbde;
-  --iron-fg-bright: #f2f4f5;
-  --iron-fg-white: #ffffff;
-
-  --iron-accent-steel: #c9ced3;
-  --iron-accent-graphite: #777d84;
-
-  --iron-urgent: #b6585d;
-  --iron-warning: #d5a253;
-  --iron-success: #7fa36d;
-}
+/* This file is imported by GTK-CSS consumers only (waybar, wlogout,
+ * gtkgreet's style.css) - GTK's CSS engine implements a small subset of
+ * CSS and only understands colors via @define-color (above); it does not
+ * support a ":root { --custom-property: ... }" block or var(...) at all.
+ * A previous version of this file had one anyway, which GTK's parser
+ * rejected as "Invalid name of pseudo-class" - a fatal parse error that
+ * was killing every consumer's stylesheet load (this is why the panel
+ * never appeared, and why the login screen rendered unstyled). Nothing
+ * in this repo ever reads var(--iron-*), so there is nothing to restore -
+ * just don't reintroduce web-CSS syntax here.
+ */

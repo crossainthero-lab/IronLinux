@@ -15,3 +15,75 @@ fi
 if [ -x "$target/usr/sbin/update-grub" ]; then
     chroot "$target" /usr/sbin/update-grub
 fi
+
+# Calamares' displaymanager job (DMgreetd in
+# /usr/lib/x86_64-linux-gnu/calamares/modules/displaymanager/main.py)
+# unconditionally rewrites /etc/greetd/config.toml's [default_session]
+# table, breaking two things - found by actually installing and
+# rebooting from disk in QEMU, not by reading the config:
+#
+# 1. `user` becomes a hardcoded "greeter", which only exists if
+#    displaymanager.conf's basicSetup is true (Iron sets it false: the
+#    real account greetd runs as here is "_greetd", the system user
+#    Debian's own greetd package creates via systemd-sysusers). Left
+#    alone, greetd starts, immediately fails with "configured default
+#    session user 'greeter' not found", and burns through its
+#    restart-limit within a couple of seconds - every fresh install
+#    boots to a bare text login instead of the graphical greeter.
+# 2. `command` becomes "agreety --cmd iron-session" (DMgreetd's
+#    fallback greeter, chosen because it looks for a "cage" binary that
+#    Iron doesn't ship) - replacing Iron's actual branded greeter
+#    (Labwc running gtkgreet with Iron's own theme, launched via
+#    /etc/greetd/labwc). Put both back.
+if [ -f "$target/etc/greetd/config.toml" ]; then
+    sed -i \
+        -e 's/^user = "greeter"$/user = "_greetd"/' \
+        -e 's|^command = "agreety --cmd iron-session"$|command = "labwc -C /etc/greetd/labwc"|' \
+        "$target/etc/greetd/config.toml"
+fi
+
+# packages.conf already removes the calamares/live-boot/live-config
+# packages themselves from the target, which takes their own desktop
+# entries and autostart icon with them. What's left is Iron's own
+# "Install Iron Linux" launchers (includes.chroot files, not owned by
+# any package Calamares can uninstall): the applications-menu entry and
+# every already-materialized user's Desktop icon (copied from
+# /etc/skel by the users module earlier in this same install sequence).
+# Removing them here - once, at install time, from a job module that's
+# already chrooting into the target for initramfs/grub - is the Calamares
+# way to do this; it is not a first-login workaround.
+rm -f "$target/usr/share/applications/iron-installer.desktop"
+rm -f "$target/etc/skel/Desktop/install-iron-linux.desktop"
+for home in "$target"/root "$target"/home/*; do
+    [ -d "$home" ] || continue
+    rm -f "$home/Desktop/install-iron-linux.desktop"
+done
+
+# Same idea for Waybar's "Install Iron Linux" button: drop the
+# custom/install module from every waybar config shipped/materialized in
+# the target, using python3 (already a hard dependency of Calamares
+# itself, so always present in the target's package set at this point)
+# so this is a real JSON edit rather than a brittle sed/grep patch.
+strip_install_button() {
+    f="$1"
+    [ -f "$f" ] || return 0
+    chroot "$target" python3 - "${f#"$target"}" <<'PYEOF'
+import json, sys
+path = sys.argv[1]
+with open(path) as fh:
+    cfg = json.load(fh)
+for key in ("modules-left", "modules-center", "modules-right"):
+    if key in cfg and "custom/install" in cfg[key]:
+        cfg[key] = [m for m in cfg[key] if m != "custom/install"]
+cfg.pop("custom/install", None)
+with open(path, "w") as fh:
+    json.dump(cfg, fh, indent=2)
+    fh.write("\n")
+PYEOF
+}
+strip_install_button "$target/etc/xdg/waybar/config"
+strip_install_button "$target/etc/skel/.config/waybar/config"
+for home in "$target"/root "$target"/home/*; do
+    [ -d "$home" ] || continue
+    strip_install_button "$home/.config/waybar/config"
+done

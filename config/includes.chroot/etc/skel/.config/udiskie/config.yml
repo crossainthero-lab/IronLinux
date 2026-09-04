@@ -1,0 +1,17 @@
+# Iron Linux - udiskie device rules.
+#
+# Problem: the live boot medium itself (the ISO's own optical/loop
+# device, volume label IRON_LINUX - see auto/config's --iso-volume) is
+# already mounted read-only by live-boot at /run/live/medium before the
+# desktop session starts. udiskie's udisks2 monitor still sees that same
+# block device appear over udev and tries to automount it a second time,
+# which either races live-boot's mount or fails outright - producing a
+# spurious "Failed to mount" notification on an otherwise normal boot.
+#
+# Fix: tell udiskie to leave the boot medium alone. It should never be
+# offered for (re)mounting, ejecting, or unlocking - live-boot already
+# owns it. This has no effect on an installed system (no device will
+# ever carry this label there).
+device_config:
+  - id_label: IRON_LINUX
+    ignore: true

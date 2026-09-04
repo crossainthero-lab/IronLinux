@@ -1,36 +1,66 @@
-window.active.title.bg: Solid
-window.active.title.bg.color: #1d2024
-window.active.label.text.color: #f2f4f5
-window.active.button.*.image.color: #d9dde1
+# Iron - labwc theme
+#
+# labwc's themerc is a flat key/value format loosely modelled on Openbox 3
+# themes, but it is NOT an Openbox themerc: labwc does not understand
+# Openbox's "<key>: Solid" appearance directives, per-corner geometry keys
+# (title.height, handle.width, padding.width outside the documented
+# window.titlebar.padding.* keys) or a bare "window.*.font"/"justify" key -
+# those are silently ignored. Every key below is taken from labwc-theme(5)
+# for labwc 0.8.3 (Debian trixie). Font and corner radius are configured in
+# rc.xml's <theme> section instead, per that same man page.
+
+# general
+border.width: 1
+window.titlebar.padding.width: 0
+window.titlebar.padding.height: 0
+
+# window border
 window.active.border.color: #777d84
-window.active.handle.bg: Solid
-window.active.handle.bg.color: #24282d
-window.inactive.title.bg: Solid
-window.inactive.title.bg.color: #121416
-window.inactive.label.text.color: #8f969e
-window.inactive.button.*.image.color: #707780
 window.inactive.border.color: #2d3237
-window.inactive.handle.bg: Solid
-window.inactive.handle.bg.color: #15181b
-window.*.font: Inter
-window.*.justify: Center
-window.*.title.height: 30
-window.*.border.width: 1
-window.*.padding.width: 8
-window.*.handle.width: 2
-menu.items.bg: Solid
+
+# window titlebar background
+window.active.title.bg.color: #1d2024
+window.inactive.title.bg.color: #121416
+
+# window titlebar text
+window.active.label.text.color: #f2f4f5
+window.inactive.label.text.color: #8f969e
+window.label.text.justify: center
+
+# titlebar buttons
+window.button.width: 26
+window.button.height: 26
+window.button.spacing: 4
+window.button.hover.bg.corner-radius: 4
+
+# button icon color, all buttons, both states - overridden per-button below
+window.active.button.unpressed.image.color: #d9dde1
+window.inactive.button.unpressed.image.color: #707780
+window.active.button.hover.image.color: #ffffff
+window.inactive.button.hover.image.color: #b6bcc2
+
+# close button reads as a clear "stop" affordance on hover, like a normal DE
+window.active.button.close.hover.image.color: #ffffff
+window.active.button.close.hover.bg.color: #b6585d
+
+# window drop-shadows
+window.active.shadow.size: 24
+window.inactive.shadow.size: 16
+window.active.shadow.color: #00000060
+window.inactive.shadow.color: #00000040
+
+# menu
+menu.border.width: 1
+menu.border.color: #4d535a
 menu.items.bg.color: #15181b
 menu.items.text.color: #d7dbde
-menu.items.active.bg: Solid
 menu.items.active.bg.color: #2c3137
 menu.items.active.text.color: #ffffff
-menu.items.disabled.text.color: #666d75
-menu.title.bg: Solid
+menu.separator.color: #3a4046
 menu.title.bg.color: #20242a
 menu.title.text.color: #f2f4f5
-menu.border.color: #4d535a
-menu.border.width: 1
-osd.bg: Solid
+
+# on screen display (window switcher, volume/brightness OSD)
 osd.bg.color: #15181b
 osd.border.color: #777d84
 osd.border.width: 1

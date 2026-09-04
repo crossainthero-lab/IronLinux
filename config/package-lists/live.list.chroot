@@ -28,3 +28,15 @@ grub-pc-bin
 grub-efi-amd64-bin
 btrfs-progs
 xfsprogs
+
+## --- Installer runtime dependency: NOT pulled in automatically ---
+# Calamares' "displaymanager" python job module does `import toml` (see
+# /usr/lib/x86_64-linux-gnu/calamares/modules/displaymanager/main.py,
+# DMgreetd.config_load) to read/write /etc/greetd/config.toml when greetd
+# is the configured display manager (displaymanager.conf). Debian does
+# not declare this as a package dependency of calamares (it's a Python
+# runtime import, invisible to dpkg), so without it explicitly listed
+# here the installer crashes with "Bad main script file" / a
+# ModuleNotFoundError partway through every install - found by actually
+# running the installer to completion in QEMU, not by static inspection.
+python3-toml

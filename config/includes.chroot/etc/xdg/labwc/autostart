@@ -1,5 +1,18 @@
 #!/bin/sh
-set -eu
+# Iron Linux - Labwc session autostart.
+#
+# Design constraint: a missing/misbehaving *optional* desktop component
+# (tray applet, clipboard sync, idle daemon...) must never prevent the
+# rest of the desktop from starting. Every component below is launched
+# through iron_start, which never propagates a child's failure back into
+# this script - it only records it to the session log (see
+# iron-session-log / Task 7). This script intentionally does NOT use
+# `set -e`: under POSIX sh, backgrounded commands ("cmd &") already never
+# trip `set -e` (their exit status is invisible to the parent), so `-e`
+# only ever protected the handful of synchronous setup lines (mkfifo,
+# directory creation) - and turned any transient failure *there* into a
+# hard abort of every autostart line still queued behind it. Those lines
+# are now individually guarded instead.
 
 export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-wlroots}"
 export XDG_SESSION_DESKTOP="${XDG_SESSION_DESKTOP:-iron-labwc}"
@@ -8,38 +21,97 @@ export MOZ_ENABLE_WAYLAND="${MOZ_ENABLE_WAYLAND:-1}"
 export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland;xcb}"
 export GDK_BACKEND="${GDK_BACKEND:-wayland,x11}"
 
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/iron"
+log="$state_dir/session.log"
+mkdir -p "$state_dir" 2>/dev/null
+
+# Bound the log instead of letting it grow forever: keep roughly the
+# last 500 lines, checked once per session start (cheap, and this file
+# is only ever appended to a handful of times per login).
+if [ -f "$log" ]; then
+    lines="$(wc -l < "$log" 2>/dev/null || echo 0)"
+    if [ "${lines:-0}" -gt 1000 ]; then
+        tail -n 500 "$log" > "$log.tmp" 2>/dev/null && mv "$log.tmp" "$log"
+    fi
+fi
+
+iron_log() {
+    printf '%s [%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$1" "$2" >> "$log" 2>/dev/null
+}
+
+# iron_start <label> <binary> [args...]
+# Launches <binary> [args...] in the background under <label>, logging
+# whether the binary exists and whether the launch succeeded. Never
+# exits non-zero - a missing/failing component is logged, not fatal.
+iron_start() {
+    label="$1"
+    bin="$2"
+    shift 2
+    if ! command -v "$bin" >/dev/null 2>&1; then
+        iron_log "MISSING" "$label: '$bin' not found on PATH, skipped"
+        return 0
+    fi
+    ("$bin" "$@" >>"$state_dir/$label.out" 2>&1
+     iron_log "EXIT" "$label: '$bin' exited with status $?") &
+    iron_log "START" "$label: launched '$bin $*' (pid $!)"
+    return 0
+}
+
+iron_log "SESSION" "autostart begin (user=${USER:-unknown})"
+
 dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE >/dev/null 2>&1 || true
 systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE >/dev/null 2>&1 || true
 
+# --- Wallpaper -------------------------------------------------------
 wallpaper=/usr/share/backgrounds/iron/wallpaper-4k.png
 if [ -r "$wallpaper" ]; then
-    swaybg -m fill -i "$wallpaper" &
+    iron_start swaybg swaybg -m fill -i "$wallpaper"
 else
-    swaybg -c '#111315' &
+    iron_log "FALLBACK" "swaybg: wallpaper image missing, using flat color"
+    iron_start swaybg swaybg -c '#111315'
 fi
 
-mako &
-waybar &
-nm-applet --indicator &
-blueman-applet &
-udiskie --tray --notify &
-lxpolkit &
+# --- Panel, notifications, tray applets --------------------------------
+# (Desktop icons: PCManFM's `--desktop` root-window manager was tried
+# here and verified in a real QEMU boot to segfault immediately (session
+# log recorded "pcmanfm exited with status 139") under XWayland/labwc -
+# it is not a viable way to surface "Install Iron Linux" etc. The Waybar
+# launcher/install buttons and the right-click root menu (menu.xml)
+# cover discoverability instead - see Task 11 in the project notes.)
+iron_start mako mako
+iron_start waybar waybar
+iron_start nm-applet nm-applet --indicator
+iron_start blueman-applet blueman-applet
+# udiskie auto-discovers $XDG_CONFIG_HOME/udiskie/config.yml (shipped via
+# /etc/skel, see Task Problem 4) which tells it to ignore the boot medium.
+iron_start udiskie udiskie --tray --notify
+iron_start lxpolkit lxpolkit
 
-wl-paste --type text --watch cliphist store &
-wl-paste --type image --watch cliphist store &
+# --- Clipboard sync (feeds iron-clipboard-menu / Super+V) --------------
+iron_start cliphist-text wl-paste --type text --watch cliphist store
+iron_start cliphist-image wl-paste --type image --watch cliphist store
 
-lockscreen=/usr/share/backgrounds/iron/lockscreen.png
-if [ -r "$lockscreen" ]; then
-    swayidle -w \
-        timeout 900 "swaylock -f -i $lockscreen" \
-        before-sleep "swaylock -f -i $lockscreen" &
+# --- Idle / lock ---------------------------------------------------------
+if command -v swayidle >/dev/null 2>&1 && command -v iron-lock >/dev/null 2>&1; then
+    iron_start swayidle swayidle -w \
+        timeout 900 "iron-lock" \
+        before-sleep "iron-lock"
 else
-    swayidle -w \
-        timeout 900 'swaylock -f -c 111315' \
-        before-sleep 'swaylock -f -c 111315' &
+    iron_log "MISSING" "swayidle: idle locking disabled (swayidle or iron-lock missing)"
 fi
 
-fifo="${XDG_RUNTIME_DIR:-/tmp}/iron-wob.sock"
-rm -f "$fifo"
-mkfifo "$fifo"
-tail -f "$fifo" | wob --border-color '#777d84' --bar-color '#c9ced3' --background-color '#171a1d' &
+# --- Volume/brightness OSD (wob), fed by iron-volume ------------------
+if command -v wob >/dev/null 2>&1; then
+    fifo="${XDG_RUNTIME_DIR:-/tmp}/iron-wob.sock"
+    rm -f "$fifo"
+    if mkfifo "$fifo" 2>>"$log"; then
+        (tail -f "$fifo" | wob --border-color '#777d84' --bar-color '#c9ced3' --background-color '#171a1d' >>"$state_dir/wob.out" 2>&1) &
+        iron_log "START" "wob: launched (pid $!)"
+    else
+        iron_log "EXIT" "wob: mkfifo $fifo failed, OSD disabled"
+    fi
+else
+    iron_log "MISSING" "wob: not found on PATH, volume/brightness OSD disabled"
+fi
+
+iron_log "SESSION" "autostart complete"

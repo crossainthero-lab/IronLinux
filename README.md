@@ -8,9 +8,13 @@ Dark iron / machined metal visual identity. No GNOME, no KDE, no XFCE,
 no bundled desktop environment - a small, coherent set of native
 Wayland components instead.
 
-**Status:** build skeleton, package lists, OS identity, Labwc/Wayland desktop
-configuration, Plymouth boot theme, greetd login branding, and unified dark
-iron theme palette are in place. The ISO has not been built or boot-tested yet.
+**Status:** builds a working, boot-tested ISO. As of this commit, the full
+flow **boot → graphical login → Labwc desktop with a working panel →
+window management → Calamares installer → real install → reboot from
+disk → graphical login on the installed system → `apt update`** has been
+exercised end-to-end in QEMU (BIOS boot, virtio disk/net) - see
+"What's actually been tested" below for exactly what that covered and
+what it didn't.
 
 ## Quick start
 
@@ -80,23 +84,70 @@ also `dd`-able to a USB stick).
 ## What's already validated
 
 - `./scripts/lint-package-lists.sh` - structural check of the package
-  lists (no duplicates, no malformed lines). Passing as of this commit.
-- The `lb config` flags in `auto/config` were cross-checked against
-  `lb config --help` on a live-build install, though the specific
-  live-build version available in this dev environment is an old
-  Ubuntu-packaged fork (`3.0~a57`), not the current Debian live-build
-  that will actually run the build. **The flag set should be
-  re-verified against `man lb_config` on the real Debian build host
-  before the first real build** - see `docs/BUILD.md` and the note at
-  the top of `auto/config`.
+  lists (no duplicates, no malformed lines).
+- `./scripts/validate-desktop-config.sh` - pre-build sanity checks: XML
+  well-formedness (rc.xml/menu.xml), GTK-CSS syntax (waybar/wlogout
+  stylesheets - GTK's CSS engine is a small subset of real CSS and has
+  no error recovery for a bad selector or an unbalanced comment), Waybar
+  JSON validity, every Iron helper script's executable bit and
+  interpreter, every referenced command's owning package, and the
+  Calamares module sequence (duplicate modules, module ids with no
+  corresponding `.conf`/`module.desc`). Run it before spending ~10
+  minutes on a build.
+- A full ISO build (`sudo ./build.sh`) on the current Debian
+  **trixie/stable** `live-build` (20250814) completes successfully and
+  passes BIOS+UEFI El Torito structural validation.
+
+### What's actually been tested (QEMU, BIOS boot, virtio disk/net)
+
+- Live boot to a graphical greetd/gtkgreet login, login as the live
+  `iron` user (live-config's default password is **`live`**, not
+  blank - undocumented anywhere in the UI, so noting it here).
+- Labwc session: Waybar panel (launcher, workspaces, taskbar, clock,
+  tray, network, bluetooth, volume, power), Fuzzel launcher, Foot
+  terminal, PCManFM, window decorations (server-side, Iron theme),
+  Alt+F4 close, Alt+Tab, double-click-to-maximize, keyboard shortcuts.
+- No spurious "failed to mount" notification on boot.
+- Calamares: launches with no initialization error, no duplicate
+  timezone module, no blank page; Welcome → Location → Keyboard →
+  Partitions → Users → Summary → Install → Finish, matching the
+  intended flow.
+- A real install to a blank 20GB virtio disk, completing successfully
+  end to end (partitioning, unpacking, users, displaymanager, grub,
+  package cleanup all confirmed to actually finish, not just start).
+- Shutdown, ISO detached, cold boot from the installed disk: GRUB (BIOS)
+  boots the installed system, graphical greetd/gtkgreet login appears,
+  login works, full desktop (panel, launcher, terminal, window
+  management) works exactly as on the live system, `/etc/os-release`
+  correctly identifies Iron Linux, and `sudo apt update` succeeds
+  against the real Debian mirrors.
+
+### Not tested
+
+- Real hardware of any kind - everything above is QEMU/KVM only.
+  Firmware package coverage (`core.list.chroot`) is best-effort and
+  unverified against actual devices.
+- UEFI boot end-to-end (the ISO's UEFI El Torito image is structurally
+  validated, but the full login→install→reboot flow above was only
+  driven through the BIOS path).
+- Manual partitioning, LUKS/encrypted installs, multi-disk or dual-boot
+  scenarios, Bluetooth with real hardware, suspend/resume.
+- Precise mouse-click behavior on Labwc's own server-side-decoration
+  titlebar buttons and on some Qt/XWayland widgets could not be
+  confirmed via the QEMU synthetic-input harness used for this testing
+  (clicks that only need "hover" or "press" registered fine; clicks
+  requiring a matched press+release on those specific widgets did not,
+  across repeated attempts) - keyboard equivalents (Alt+F4, Super+H,
+  Super+Up/Down, and double-click-to-maximize on the titlebar) were all
+  confirmed to work reliably instead. This needs verification with a
+  real mouse before being called resolved either way.
 
 ## Known limitations / not done yet
 
-- No ISO has been built or boot-tested yet.
-- Calamares installer theming is not complete (currently default `calamares-settings-debian`).
+- Calamares installer theming is functional but minimal (Iron branding
+  + a corrected module sequence; visual polish beyond that is not done).
 - Firmware package names in `core.list.chroot` are best-effort and
-  should be confirmed with `apt-cache search` on the real Debian build
-  host - see `docs/PACKAGES.md`.
+  should be confirmed with `apt-cache search` on real target hardware.
 
 ## Using Iron Linux like Debian (once built)
 

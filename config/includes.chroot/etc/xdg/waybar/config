@@ -6,18 +6,31 @@
   "margin-top": 0,
   "margin-left": 0,
   "margin-right": 0,
-  "modules-left": ["custom/launcher", "wlr/workspaces"],
+  "modules-left": ["custom/launcher", "wlr/workspaces", "wlr/taskbar"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "network", "pulseaudio", "battery", "custom/power"],
+  "modules-right": ["custom/install", "tray", "network", "bluetooth", "pulseaudio", "battery", "custom/power"],
   "custom/launcher": {
     "format": "Iron",
     "tooltip": false,
     "on-click": "fuzzel"
   },
+  "custom/install": {
+    "format": "Install Iron Linux",
+    "tooltip": false,
+    "on-click": "iron-installer"
+  },
   "wlr/workspaces": {
     "format": "{name}",
     "on-click": "activate",
     "sort-by-number": true
+  },
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 18,
+    "tooltip-format": "{title}",
+    "on-click": "activate",
+    "on-click-middle": "close",
+    "all-outputs": true
   },
   "clock": {
     "format": "{:%a %d %b  %H:%M}",
@@ -29,6 +42,14 @@
     "format-disconnected": "Offline",
     "tooltip-format": "{ifname}",
     "on-click": "nm-connection-editor"
+  },
+  "bluetooth": {
+    "format": "",
+    "format-disabled": "",
+    "format-connected": " {num_connections}",
+    "tooltip-format": "{controller_alias}: {controller_address}",
+    "tooltip-format-connected": "{controller_alias}: {controller_address}\n{device_enumerate}",
+    "on-click": "blueman-manager"
   },
   "pulseaudio": {
     "format": "{volume}%",

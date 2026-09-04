@@ -15,6 +15,10 @@
     <name>Iron</name>
     <cornerRadius>4</cornerRadius>
     <font name="Inter" size="10" />
+    <titlebar>
+      <layout>icon:iconify,max,close</layout>
+      <showTitle>yes</showTitle>
+    </titlebar>
   </theme>
 
   <focus>
@@ -53,7 +57,7 @@
       <action name="Execute" command="fuzzel" />
     </keybind>
     <keybind key="W-Space">
-      <action name="ShowMenu" menu="root-menu" />
+      <action name="Execute" command="fuzzel" />
     </keybind>
     <keybind key="W-e">
       <action name="Execute" command="pcmanfm" />
@@ -77,7 +81,7 @@
       <action name="Execute" command="iron-screenshot region" />
     </keybind>
     <keybind key="W-l">
-      <action name="Execute" command="swaylock -f -c 111315" />
+      <action name="Execute" command="iron-lock" />
     </keybind>
     <keybind key="W-x">
       <action name="Execute" command="iron-power-menu" />
@@ -87,6 +91,9 @@
     </keybind>
     <keybind key="A-S-Tab">
       <action name="PreviousWindow" />
+    </keybind>
+    <keybind key="A-F4">
+      <action name="Close" />
     </keybind>
     <keybind key="W-Left">
       <action name="SnapToEdge" direction="left" />
@@ -99,6 +106,9 @@
     </keybind>
     <keybind key="W-Down">
       <action name="UnMaximize" />
+    </keybind>
+    <keybind key="W-h">
+      <action name="Iconify" />
     </keybind>
     <keybind key="W-q">
       <action name="Close" />
