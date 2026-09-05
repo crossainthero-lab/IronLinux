@@ -1,0 +1,77 @@
+# Iron Linux Raspberry Pi 4 ARM64 - desktop packages
+#
+# Keep this aligned with the amd64 Iron desktop stack where packages are
+# architecture-independent.
+
+## --- Compositor ---
+labwc
+xwayland
+wayland-utils
+wlr-randr
+
+## --- Session login ---
+greetd
+gtkgreet
+
+## --- Authentication agent ---
+polkitd
+pkexec
+lxpolkit
+
+## --- Panel / launcher ---
+waybar
+fuzzel
+
+## --- Notifications ---
+mako-notifier
+
+## --- Terminal ---
+foot
+
+## --- File manager + removable media ---
+pcmanfm
+gvfs
+udiskie
+
+## --- Boot splash ---
+plymouth
+plymouth-label
+
+## --- Wallpaper / lock screen / power menu ---
+swaybg
+swayidle
+swaylock
+wlogout
+
+## --- Screenshots + clipboard ---
+grim
+slurp
+wl-clipboard
+cliphist
+
+## --- Audio: PipeWire + WirePlumber stack ---
+pipewire
+pipewire-pulse
+pipewire-alsa
+wireplumber
+wob
+
+## --- Networking ---
+network-manager
+network-manager-applet
+
+## --- Bluetooth ---
+bluez
+blueman
+
+## --- Input / hardware controls ---
+brightnessctl
+
+## --- System helpers & scripting ---
+python3-gi
+
+## --- Fonts & Themes ---
+fonts-inter
+fonts-jetbrains-mono
+fonts-noto-color-emoji
+hicolor-icon-theme

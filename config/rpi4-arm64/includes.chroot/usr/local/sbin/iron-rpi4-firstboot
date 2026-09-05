@@ -1,0 +1,51 @@
+#!/bin/sh
+set -eu
+
+done_file=/var/lib/iron-linux/rpi4-firstboot.done
+mkdir -p /var/lib/iron-linux
+
+log() {
+    printf 'iron-rpi4-firstboot: %s\n' "$*"
+}
+
+if [ -e "$done_file" ]; then
+    exit 0
+fi
+
+root_src="$(findmnt -n -o SOURCE / || true)"
+root_part=""
+case "$root_src" in
+    /dev/mmcblk*p[0-9]|/dev/nvme*n*p[0-9])
+        root_part="$root_src"
+        root_disk="${root_src%p[0-9]}"
+        ;;
+    /dev/sd*[0-9]|/dev/vd*[0-9]|/dev/hd*[0-9])
+        root_part="$root_src"
+        root_disk="${root_src%[0-9]}"
+        ;;
+    *)
+        root_disk=""
+        ;;
+esac
+
+if [ -n "${root_part:-}" ] && [ -n "${root_disk:-}" ] && command -v growpart >/dev/null 2>&1; then
+    part_num="${root_part##*[!0-9]}"
+    log "expanding partition ${root_part}"
+    growpart "$root_disk" "$part_num" || log "growpart failed; continuing"
+fi
+
+if [ -n "${root_part:-}" ] && command -v resize2fs >/dev/null 2>&1; then
+    log "resizing root filesystem ${root_part}"
+    resize2fs "$root_part" || log "resize2fs failed; continuing"
+fi
+
+if [ -e /etc/machine-id ]; then
+    truncate -s 0 /etc/machine-id || true
+fi
+if command -v systemd-machine-id-setup >/dev/null 2>&1; then
+    systemd-machine-id-setup || true
+fi
+
+date -u '+%Y-%m-%dT%H:%M:%SZ' > "$done_file"
+systemctl disable iron-rpi4-firstboot.service >/dev/null 2>&1 || true
+log "complete"

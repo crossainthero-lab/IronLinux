@@ -1,0 +1,54 @@
+# Iron Linux Raspberry Pi 4 ARM64 - core system packages
+#
+# This is intentionally separate from config/package-lists/core.list.chroot:
+# the amd64 ISO needs PC kernels, microcode, guest tools and bootloaders;
+# the Pi image needs Raspberry Pi firmware plus an ARM64 kernel.
+
+## --- Kernel / Raspberry Pi boot firmware ---
+linux-image-arm64
+initramfs-tools
+raspi-firmware
+
+## --- Raspberry Pi / common firmware ---
+firmware-brcm80211
+firmware-misc-nonfree
+firmware-linux
+firmware-realtek
+wireless-regdb
+
+## --- Init system / core userspace ---
+systemd
+systemd-sysv
+udev
+dbus
+
+## --- APT / package management ---
+apt
+apt-utils
+apt-transport-https
+ca-certificates
+gnupg
+
+## --- Base shell / admin tooling ---
+sudo
+less
+bash-completion
+locales
+console-setup
+keyboard-configuration
+
+## --- Disk / storage utilities ---
+e2fsprogs
+dosfstools
+parted
+gdisk
+cloud-guest-utils
+
+## --- Hardware / networking basics ---
+usbutils
+iproute2
+isc-dhcp-client
+wpasupplicant
+iw
+rfkill
+openssh-client

@@ -1,0 +1,14 @@
+[Unit]
+Description=Iron Linux Raspberry Pi first boot setup
+DefaultDependencies=no
+After=local-fs.target
+Before=systemd-machine-id-commit.service sysinit.target
+ConditionPathExists=!/var/lib/iron-linux/rpi4-firstboot.done
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/iron-rpi4-firstboot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target

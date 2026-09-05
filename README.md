@@ -16,6 +16,33 @@ exercised end-to-end in QEMU (BIOS boot, virtio disk/net) - see
 "What's actually been tested" below for exactly what that covered and
 what it didn't.
 
+## Downloads
+
+Prebuilt images are published on the
+[GitHub Releases](https://github.com/crossainthero-lab/IronLinux/releases/latest)
+page, each with a matching `.sha256` checksum.
+
+### PC — AMD64
+
+**Iron Linux AMD64 ISO** — for standard x86-64 PCs, laptops and virtual
+machines. Boot it directly, or use it with the bundled Calamares
+installer to install to disk.
+
+→ GitHub Releases → `iron-linux-amd64.iso`
+
+### Raspberry Pi 4 — ARM64
+
+**Iron Linux Raspberry Pi 4 ARM64** — a compressed, flashable raw disk
+image. Decompress before flashing, or use an imaging tool (e.g. Raspberry
+Pi Imager, `balenaEtcher`) that can flash `.xz` images directly.
+
+→ GitHub Releases → `iron-linux-rpi4-arm64.img.xz`
+
+Build validated; physical Raspberry Pi 4 hardware validation pending.
+
+The full uncompressed Raspberry Pi `.img` (~8 GB) is not distributed
+through GitHub Releases due to size; it is archived separately.
+
 ## Quick start
 
 ```bash
