@@ -48,6 +48,69 @@ for f in "$CHROOT_ROOT"/etc/xdg/labwc/rc.xml \
     fi
 done
 
+# --- Labwc titlebar button mouse actions --------------------------------
+# Labwc exposes titlebar buttons as their own mouse contexts. If Iron defines
+# a custom <mouse> section without either <default /> or explicit button
+# contexts, the buttons still draw but clicks do nothing.
+echo "== Labwc titlebar button actions =="
+LABWC_RC="$CHROOT_ROOT/etc/xdg/labwc/rc.xml"
+if [ -f "$LABWC_RC" ] && command -v python3 >/dev/null 2>&1; then
+    if python3 - "$LABWC_RC" <<'PYEOF'
+import sys
+import xml.etree.ElementTree as ET
+
+path = sys.argv[1]
+root = ET.parse(path).getroot()
+
+layout_el = root.find("./theme/titlebar/layout")
+layout = (layout_el.text or "").strip() if layout_el is not None else "icon:iconify,max,close"
+present = {part.strip() for side in layout.split(":") for part in side.split(",") if part.strip()}
+
+button_requirements = {
+    "iconify": ("Iconify", "Iconify"),
+    "max": ("Maximize", "ToggleMaximize"),
+    "close": ("Close", "Close"),
+}
+
+mouse = root.find("mouse")
+uses_default_mouse = mouse is not None and mouse.find("default") is not None
+
+def has_left_click_action(context_name, action_name):
+    if mouse is None:
+        return False
+    for context in mouse.findall("context"):
+        if context.get("name") != context_name:
+            continue
+        for bind in context.findall("mousebind"):
+            if bind.get("button") != "Left" or bind.get("action") != "Click":
+                continue
+            if any(action.get("name") == action_name for action in bind.findall("action")):
+                return True
+    return False
+
+missing = []
+for button, (context_name, action_name) in button_requirements.items():
+    if button not in present:
+        continue
+    if uses_default_mouse or has_left_click_action(context_name, action_name):
+        continue
+    missing.append(f"{button} -> context {context_name} / Left Click / {action_name}")
+
+if missing:
+    print("FAIL: visible Labwc titlebar button(s) lack mouse action binding: " + "; ".join(missing))
+    raise SystemExit(1)
+
+print("OK: visible titlebar buttons have Left Click actions")
+PYEOF
+    then
+        ok "$LABWC_RC"
+    else
+        err "$LABWC_RC has broken Labwc titlebar button mouse bindings"
+    fi
+else
+    note "python3 not available, skipped Labwc titlebar button action check"
+fi
+
 # --- GTK-CSS sanity (waybar/wlogout/gtkgreet stylesheets) ----------------
 # GTK's CSS engine is a small subset of real CSS: no ":root {}", no
 # var(...)/custom properties, colors only via @define-color. It also has
